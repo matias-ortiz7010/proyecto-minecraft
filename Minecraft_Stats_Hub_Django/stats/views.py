@@ -1,0 +1,143 @@
+from django.db.models import Q
+from django.http import JsonResponse
+from django.shortcuts import render
+
+from .models import Jugador, Mod, PvP, Servidor, Speedrun
+
+
+def index(request):
+    speedruns = Speedrun.objects.select_related("jugador")[:5]
+    servidores = Servidor.objects.all()[:10]
+    mods = Mod.objects.all()[:6]
+    top_pvp = PvP.objects.select_related("jugador").order_by("-victorias", "-kills").first()
+
+    record = speedruns[0] if speedruns else None
+    top_server = servidores[0] if servidores else None
+    top_mod = mods[0] if mods else None
+
+    context = {
+        "speedruns": speedruns,
+        "servidores": servidores,
+        "mods": mods,
+        "record": record,
+        "top_pvp": top_pvp,
+        "top_server": top_server,
+        "top_mod": top_mod,
+        "chart_labels": [run.jugador.nombre for run in speedruns],
+        "chart_values": [round(run.tiempo_ms / 1000, 3) for run in speedruns],
+    }
+    return render(request, "index.html", context)
+
+
+def api_buscar_jugador(request):
+    query = request.GET.get("q", "").strip()
+    if not query:
+        return JsonResponse({"ok": False, "error": "Escribí el nombre de un jugador."}, status=400)
+
+    jugador = (
+        Jugador.objects.filter(Q(nombre__iexact=query) | Q(uuid__iexact=query))
+        .select_related("pvp")
+        .first()
+    )
+    if not jugador:
+        return JsonResponse({"ok": False, "error": "Jugador no encontrado."}, status=404)
+
+    try:
+        pvp = jugador.pvp
+    except PvP.DoesNotExist:
+        pvp = None
+
+    mejor_speedrun = jugador.speedruns.order_by("tiempo_ms").first()
+
+    return JsonResponse(
+        {
+            "ok": True,
+            "jugador": {
+                "nombre": jugador.nombre,
+                "uuid": jugador.uuid,
+                "pais": jugador.pais,
+                "skin_url": jugador.skin_url,
+                "pvp": {
+                    "victorias": pvp.victorias,
+                    "derrotas": pvp.derrotas,
+                    "kills": pvp.kills,
+                    "racha": pvp.racha,
+                    "winrate": pvp.winrate,
+                } if pvp else None,
+                "mejor_speedrun": {
+                    "categoria": mejor_speedrun.categoria,
+                    "tiempo": mejor_speedrun.tiempo_formateado,
+                    "version": mejor_speedrun.version,
+                    "verificado": mejor_speedrun.verificado,
+                } if mejor_speedrun else None,
+            },
+        }
+    )
+
+
+def api_resumen(request):
+    record = Speedrun.objects.select_related("jugador").first()
+    top_pvp = PvP.objects.select_related("jugador").order_by("-victorias", "-kills").first()
+    top_server = Servidor.objects.first()
+    top_mod = Mod.objects.first()
+
+    return JsonResponse(
+        {
+            "record": {
+                "jugador": record.jugador.nombre,
+                "tiempo": record.tiempo_formateado,
+            } if record else None,
+            "jugador_top": top_pvp.jugador.nombre if top_pvp else None,
+            "servidor_top": top_server.nombre if top_server else None,
+            "mod_top": top_mod.nombre if top_mod else None,
+        }
+    )
+
+
+def api_servidores(request):
+    data = [
+        {
+            "id": servidor.id,
+            "nombre": servidor.nombre,
+            "ip": servidor.ip,
+            "pais": servidor.pais,
+            "jugadores": servidor.jugadores,
+            "online": servidor.online,
+            "actualizado_en": servidor.actualizado_en.isoformat(),
+        }
+        for servidor in Servidor.objects.all()[:50]
+    ]
+    return JsonResponse({"servidores": data})
+
+
+def api_speedruns(request):
+    data = [
+        {
+            "id": run.id,
+            "jugador": run.jugador.nombre,
+            "categoria": run.categoria,
+            "tiempo": run.tiempo_formateado,
+            "tiempo_ms": run.tiempo_ms,
+            "fecha": run.fecha.isoformat() if run.fecha else None,
+            "version": run.version,
+            "verificado": run.verificado,
+            "fuente_url": run.fuente_url,
+        }
+        for run in Speedrun.objects.select_related("jugador")[:50]
+    ]
+    return JsonResponse({"speedruns": data})
+
+
+def api_mods(request):
+    data = [
+        {
+            "id": mod.id,
+            "nombre": mod.nombre,
+            "autor": mod.autor,
+            "version": mod.version,
+            "descargas": mod.descargas,
+            "url": mod.url,
+        }
+        for mod in Mod.objects.all()[:50]
+    ]
+    return JsonResponse({"mods": data})

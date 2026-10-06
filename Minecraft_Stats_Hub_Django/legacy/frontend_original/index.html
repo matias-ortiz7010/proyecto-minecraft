@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Minecraft Stats Hub</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <a class="brand" href="#inicio" aria-label="Minecraft Stats Hub - Inicio">
+      <img id="site-logo" class="site-logo" src="assets/logo.png" alt="Minecraft Stats Hub">
+      <span>Minecraft Stats Hub</span>
+    </a>
+    <nav>
+      <a href="#inicio">Inicio</a>
+      <a href="#jugadores">Jugadores</a>
+      <a href="#speedrun">Speedrun</a>
+      <a href="#pvp">PvP</a>
+      <a href="#mods">Mods</a>
+      <a href="#servidores">Servidores</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="inicio" class="hero" aria-label="Portada de Minecraft Stats Hub">
+      <img class="hero-banner" src="assets/banner.png" alt="Banner de Minecraft Stats Hub">
+    </section>
+
+    <section class="quick-stats" aria-label="Estadísticas destacadas">
+      <div class="cards">
+        <article class="card"><h3>Récord mundial</h3><p class="big">06:50</p></article>
+        <article class="card"><h3>Jugador top</h3><p class="big">lowk3y_</p></article>
+        <article class="card"><h3>Servidor top</h3><p class="big">Hypixel</p></article>
+        <article class="card"><h3>Mod top</h3><p class="big">Sodium</p></article>
+      </div>
+    </section>
+
+    <section id="jugadores" class="panel">
+      <h2>👤 Buscar jugador</h2>
+      <div class="search-row">
+        <input id="search" placeholder="Dream, Technoblade, lowk3y_" autocomplete="off">
+        <button id="search-button" type="button">Buscar</button>
+      </div>
+      <div id="resultado"></div>
+    </section>
+
+    <section id="speedrun" class="panel">
+      <h2>🏆 Speedrun</h2>
+      <table>
+        <tr><th>#</th><th>Jugador</th><th>Tiempo</th></tr>
+        <tr><td>1</td><td>lowk3y_</td><td>06:50</td></tr>
+        <tr><td>2</td><td>Feinberg</td><td>07:03</td></tr>
+        <tr><td>3</td><td>Couriway</td><td>07:10</td></tr>
+      </table>
+      <div class="chart-wrap"><canvas id="chart"></canvas></div>
+    </section>
+
+    <section id="pvp" class="panel">
+      <h2>⚔️ PvP</h2>
+      <p>Top jugadores, victorias, derrotas y rachas.</p>
+    </section>
+
+    <section id="mods" class="panel">
+      <h2>🧩 Mods</h2>
+      <ul><li>Sodium</li><li>OptiFine</li><li>Iris</li><li>Create</li></ul>
+    </section>
+
+    <section id="servidores" class="panel">
+      <h2>🌐 Servidores</h2>
+      <table>
+        <tr><th>Servidor</th><th>IP</th><th>Estado</th></tr>
+        <tr><td>Hypixel</td><td>mc.hypixel.net</td><td>🟢</td></tr>
+      </table>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

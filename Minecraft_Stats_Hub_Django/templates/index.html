@@ -1,0 +1,132 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Minecraft Stats Hub</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header>
+    <a class="brand" href="#inicio" aria-label="Minecraft Stats Hub - Inicio">
+      <img id="site-logo" class="site-logo" src="{% static 'assets/logo.png' %}" alt="Minecraft Stats Hub">
+      <span>Minecraft Stats Hub</span>
+    </a>
+    <nav>
+      <a href="#inicio">Inicio</a>
+      <a href="#jugadores">Jugadores</a>
+      <a href="#speedrun">Speedrun</a>
+      <a href="#pvp">PvP</a>
+      <a href="#mods">Mods</a>
+      <a href="#servidores">Servidores</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="inicio" class="hero" aria-label="Portada de Minecraft Stats Hub">
+      <img class="hero-banner" src="{% static 'assets/banner.png' %}" alt="Banner de Minecraft Stats Hub">
+    </section>
+
+    <section class="quick-stats" aria-label="Estadísticas destacadas">
+      <div class="cards">
+        <article class="card"><h3>Récord</h3><p class="big" id="record-value">{% if record %}{{ record.tiempo_formateado }}{% else %}—{% endif %}</p></article>
+        <article class="card"><h3>Jugador top</h3><p class="big" id="player-value">{% if top_pvp %}{{ top_pvp.jugador.nombre }}{% else %}—{% endif %}</p></article>
+        <article class="card"><h3>Servidor top</h3><p class="big" id="server-value">{% if top_server %}{{ top_server.nombre }}{% else %}—{% endif %}</p></article>
+        <article class="card"><h3>Mod top</h3><p class="big" id="mod-value">{% if top_mod %}{{ top_mod.nombre }}{% else %}—{% endif %}</p></article>
+      </div>
+      <p class="data-note">Los datos iniciales salen de la base de datos de Django. Los datos demo no representan rankings oficiales.</p>
+    </section>
+
+    <section id="jugadores" class="panel">
+      <h2>👤 Buscar jugador</h2>
+      <div class="search-row">
+        <input id="search" placeholder="Dream, lowk3y_..." autocomplete="off">
+        <button id="search-button" type="button">Buscar</button>
+      </div>
+      <div id="resultado" class="result" aria-live="polite"></div>
+    </section>
+
+    <section id="speedrun" class="panel">
+      <h2>🏆 Speedrun</h2>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>#</th><th>Jugador</th><th>Categoría</th><th>Tiempo</th><th>Versión</th><th>Verificado</th></tr></thead>
+          <tbody>
+            {% for run in speedruns %}
+            <tr>
+              <td>{{ forloop.counter }}</td>
+              <td>{{ run.jugador.nombre }}</td>
+              <td>{{ run.categoria }}</td>
+              <td>{{ run.tiempo_formateado }}</td>
+              <td>{{ run.version|default:"—" }}</td>
+              <td>{% if run.verificado %}✅{% else %}Pendiente{% endif %}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6">Todavía no hay speedruns cargadas.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="chart-wrap"><canvas id="chart"></canvas></div>
+      {{ chart_labels|json_script:"chart-labels" }}
+      {{ chart_values|json_script:"chart-values" }}
+    </section>
+
+    <section id="pvp" class="panel">
+      <h2>⚔️ PvP</h2>
+      {% if top_pvp %}
+      <p><strong>{{ top_pvp.jugador.nombre }}</strong>: {{ top_pvp.victorias }} victorias, {{ top_pvp.derrotas }} derrotas, {{ top_pvp.kills }} kills y {{ top_pvp.winrate }}% de winrate.</p>
+      {% else %}
+      <p>Todavía no hay estadísticas PvP cargadas.</p>
+      {% endif %}
+    </section>
+
+    <section id="mods" class="panel">
+      <h2>🧩 Mods</h2>
+      <ul class="clean-list">
+        {% for mod in mods %}
+        <li><strong>{{ mod.nombre }}</strong>{% if mod.autor %} — {{ mod.autor }}{% endif %} <span class="muted">({{ mod.descargas }} descargas registradas)</span></li>
+        {% empty %}
+        <li>Todavía no hay mods cargados.</li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <section id="servidores" class="panel">
+      <div class="section-heading">
+        <h2>🌐 Servidores</h2>
+        <span id="server-refresh-status" class="muted">Base de datos</span>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Servidor</th><th>IP</th><th>Jugadores</th><th>Estado</th></tr></thead>
+          <tbody id="servers-body">
+            {% for servidor in servidores %}
+            <tr>
+              <td>{{ servidor.nombre }}</td>
+              <td>{{ servidor.ip }}</td>
+              <td>{{ servidor.jugadores }}</td>
+              <td>{% if servidor.online %}🟢 Online{% else %}🔴 Offline{% endif %}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">Todavía no hay servidores cargados.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <p class="data-note">La tabla se vuelve a consultar cada 30 segundos. Para obtener datos externos reales todavía hay que conectar una API de servidores.</p>
+    </section>
+  </main>
+
+  <script>
+    window.MSH_ENDPOINTS = {
+      playerSearch: "{% url 'stats:api_buscar_jugador' %}",
+      summary: "{% url 'stats:api_resumen' %}",
+      servers: "{% url 'stats:api_servidores' %}"
+    };
+  </script>
+  <script src="{% static 'js/app.js' %}"></script>
+</body>
+</html>
