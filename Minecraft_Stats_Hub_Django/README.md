@@ -105,3 +105,32 @@ Para datos realmente instantáneos se puede agregar Django Channels/WebSockets d
 ### Atajo en Windows
 
 También podés hacer doble clic en `INICIAR_WINDOWS.bat`. El archivo crea el entorno virtual, instala Django, prepara la base y ejecuta el servidor. La primera vez, si querés los ejemplos, abrí otra terminal en la carpeta y ejecutá `python manage.py seed_demo` con el entorno activado.
+
+## ABM de jugadores
+
+Esta versión incorpora un ABM propio (no depende solamente de Django Admin):
+
+- **Consulta/Listado:** `/gestion/jugadores/`
+- **Alta:** `/gestion/jugadores/nuevo/`
+- **Modificación:** botón **Editar** del listado.
+- **Baja:** botón **Eliminar** con pantalla de confirmación.
+
+El ABM trabaja directamente contra el modelo `Jugador` de Django. Si eliminás un jugador, Django también elimina sus datos relacionados con `Speedrun` y `PvP` por las relaciones `CASCADE` definidas en los modelos.
+
+### En GitHub Codespaces
+
+Desde la carpeta que contiene `manage.py`:
+
+```bash
+pip install -r requirements.txt
+python manage.py migrate
+python manage.py runserver 0.0.0.0:8000
+```
+
+Después abrí el puerto 8000 y entrá a **ABM** desde la barra superior de Minecraft Stats Hub.
+
+Para ejecutar las pruebas automáticas del ABM:
+
+```bash
+python manage.py test stats
+```

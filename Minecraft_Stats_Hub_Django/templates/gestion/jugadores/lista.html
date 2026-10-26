@@ -1,0 +1,58 @@
+{% extends 'gestion/base_gestion.html' %}
+
+{% block title %}ABM de jugadores{% endblock %}
+
+{% block content %}
+<section class="panel management-panel">
+  <div class="management-heading">
+    <div>
+      <p class="eyebrow">Sistema ABM</p>
+      <h1>Gestión de jugadores</h1>
+      <p class="muted">Alta, baja, modificación y consulta de jugadores guardados en Django.</p>
+    </div>
+    <a class="button-link" href="{% url 'stats:jugador_crear' %}">+ Agregar jugador</a>
+  </div>
+
+  <form class="management-search" method="get">
+    <input type="search" name="q" value="{{ query }}" placeholder="Buscar por nombre, UUID o país..." aria-label="Buscar jugadores">
+    <button type="submit">Buscar</button>
+    {% if query %}<a class="button-link button-secondary" href="{% url 'stats:jugadores_gestion' %}">Limpiar</a>{% endif %}
+  </form>
+
+  <div class="table-scroll">
+    <table class="management-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Nombre</th>
+          <th>UUID</th>
+          <th>País</th>
+          <th>Actualizado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for jugador in jugadores %}
+          <tr>
+            <td>{{ jugador.id }}</td>
+            <td><strong>{{ jugador.nombre }}</strong></td>
+            <td class="mono">{{ jugador.uuid|default:"—" }}</td>
+            <td>{{ jugador.pais|default:"—" }}</td>
+            <td>{{ jugador.actualizado_en|date:"d/m/Y H:i" }}</td>
+            <td>
+              <div class="row-actions">
+                <a class="action-link" href="{% url 'stats:jugador_editar' jugador.pk %}">Editar</a>
+                <a class="action-link danger-text" href="{% url 'stats:jugador_eliminar' jugador.pk %}">Eliminar</a>
+              </div>
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="6">No hay jugadores que coincidan con la búsqueda.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <p class="data-note">Total mostrado: {{ jugadores|length }} jugador{{ jugadores|length|pluralize:"es" }}.</p>
+</section>
+{% endblock %}

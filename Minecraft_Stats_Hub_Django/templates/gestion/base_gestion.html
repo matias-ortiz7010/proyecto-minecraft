@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Gestión{% endblock %} · Minecraft Stats Hub</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+</head>
+<body>
+  <header>
+    <a class="brand" href="{% url 'stats:index' %}" aria-label="Volver al inicio">
+      <img class="site-logo" src="{% static 'assets/logo.png' %}" alt="Minecraft Stats Hub">
+      <span>Minecraft Stats Hub</span>
+    </a>
+    <nav>
+      <a href="{% url 'stats:index' %}">Sitio</a>
+      <a class="nav-active" href="{% url 'stats:jugadores_gestion' %}">ABM Jugadores</a>
+      <a href="/admin/">Django Admin</a>
+    </nav>
+  </header>
+
+  <main class="management-main">
+    {% if messages %}
+      <div class="messages" aria-live="polite">
+        {% for message in messages %}
+          <div class="message {{ message.tags }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

@@ -1,7 +1,9 @@
+from django.contrib import messages
 from django.db.models import Q
 from django.http import JsonResponse
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, redirect, render
 
+from .forms import JugadorForm
 from .models import Jugador, Mod, PvP, Servidor, Speedrun
 
 
@@ -141,3 +143,77 @@ def api_mods(request):
         for mod in Mod.objects.all()[:50]
     ]
     return JsonResponse({"mods": data})
+
+
+# -----------------------------
+# ABM de jugadores
+# -----------------------------
+
+def jugadores_gestion(request):
+    """Listado/consulta del ABM de jugadores."""
+    query = request.GET.get("q", "").strip()
+    jugadores = Jugador.objects.all()
+    if query:
+        jugadores = jugadores.filter(
+            Q(nombre__icontains=query)
+            | Q(uuid__icontains=query)
+            | Q(pais__icontains=query)
+        )
+
+    return render(
+        request,
+        "gestion/jugadores/lista.html",
+        {"jugadores": jugadores, "query": query},
+    )
+
+
+def jugador_crear(request):
+    """Alta de un jugador."""
+    form = JugadorForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        jugador = form.save()
+        messages.success(request, f"Jugador {jugador.nombre} agregado correctamente.")
+        return redirect("stats:jugadores_gestion")
+
+    return render(
+        request,
+        "gestion/jugadores/form.html",
+        {"form": form, "titulo": "Agregar jugador", "accion": "Crear jugador"},
+    )
+
+
+def jugador_editar(request, pk):
+    """Modificación de un jugador existente."""
+    jugador = get_object_or_404(Jugador, pk=pk)
+    form = JugadorForm(request.POST or None, instance=jugador)
+    if request.method == "POST" and form.is_valid():
+        jugador = form.save()
+        messages.success(request, f"Jugador {jugador.nombre} actualizado correctamente.")
+        return redirect("stats:jugadores_gestion")
+
+    return render(
+        request,
+        "gestion/jugadores/form.html",
+        {
+            "form": form,
+            "titulo": f"Editar {jugador.nombre}",
+            "accion": "Guardar cambios",
+            "jugador": jugador,
+        },
+    )
+
+
+def jugador_eliminar(request, pk):
+    """Baja de un jugador. La eliminación final solo se ejecuta por POST."""
+    jugador = get_object_or_404(Jugador, pk=pk)
+    if request.method == "POST":
+        nombre = jugador.nombre
+        jugador.delete()
+        messages.success(request, f"Jugador {nombre} eliminado correctamente.")
+        return redirect("stats:jugadores_gestion")
+
+    return render(
+        request,
+        "gestion/jugadores/confirmar_eliminar.html",
+        {"jugador": jugador},
+    )
