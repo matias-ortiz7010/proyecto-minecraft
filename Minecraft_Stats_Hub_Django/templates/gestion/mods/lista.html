@@ -1,0 +1,53 @@
+{% extends 'gestion/base_gestion.html' %}
+
+{% block title %}ABM de mods{% endblock %}
+
+{% block content %}
+<section class="panel management-panel">
+  <div class="management-heading">
+    <div>
+      <p class="eyebrow">Sistema ABM</p>
+      <h1>Gestión de mods</h1>
+      <p class="muted">Alta, baja, modificación y consulta de mods guardados en Django.</p>
+    </div>
+    <a class="button-link" href="{% url 'stats:mod_crear' %}">+ Agregar mod</a>
+  </div>
+
+  <form method="get" class="management-search">
+    <input type="search" name="q" value="{{ query }}" placeholder="Buscar por nombre, autor o versión..." aria-label="Buscar mods">
+    <button type="submit">Buscar</button>
+    {% if query %}<a class="button-link button-secondary" href="{% url 'stats:mods_gestion' %}">Limpiar</a>{% endif %}
+  </form>
+
+  <div class="table-scroll">
+    <table class="management-table">
+      <thead>
+        <tr><th>ID</th><th>Mod</th><th>Autor</th><th>Versión</th><th>Descargas</th><th>URL</th><th>Actualizado</th><th>Acciones</th></tr>
+      </thead>
+      <tbody>
+        {% for mod in mods %}
+          <tr>
+            <td>{{ mod.id }}</td>
+            <td><strong>{{ mod.nombre }}</strong></td>
+            <td>{{ mod.autor|default:"—" }}</td>
+            <td>{{ mod.version|default:"—" }}</td>
+            <td>{{ mod.descargas }}</td>
+            <td>{% if mod.url %}<a class="action-link" href="{{ mod.url }}" target="_blank" rel="noopener noreferrer">Ver mod</a>{% else %}—{% endif %}</td>
+            <td>{{ mod.actualizado_en|date:"d/m/Y H:i" }}</td>
+            <td>
+              <div class="row-actions">
+                <a class="action-link" href="{% url 'stats:mod_editar' mod.pk %}">Editar</a>
+                <a class="action-link danger-text" href="{% url 'stats:mod_eliminar' mod.pk %}">Eliminar</a>
+              </div>
+            </td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="8">No hay mods que coincidan con la búsqueda.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p class="data-note">Total mostrado: {{ mods|length }} mod{{ mods|length|pluralize:"s" }}.</p>
+  <p class="data-note">Las descargas son valores ingresados manualmente, todavía no son cifras oficiales ni se actualizan automáticamente.</p>
+</section>
+{% endblock %}

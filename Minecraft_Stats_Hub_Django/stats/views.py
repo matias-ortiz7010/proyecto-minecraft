@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import JugadorForm, ServidorForm
+from .forms import JugadorForm, ModForm, ServidorForm
 from .models import Jugador, Mod, PvP, Servidor, Speedrun
 
 
@@ -284,3 +284,58 @@ def servidor_eliminar(request, pk):
         request, "gestion/servidores/confirmar_eliminar.html",
         {"servidor": servidor},
     )
+
+
+# -----------------------------
+# ABM de mods
+# -----------------------------
+
+def mods_gestion(request):
+    """Listado y búsqueda por nombre, autor y versión."""
+    query = request.GET.get("q", "").strip()
+    mods = Mod.objects.all()
+    if query:
+        mods = mods.filter(
+            Q(nombre__icontains=query)
+            | Q(autor__icontains=query)
+            | Q(version__icontains=query)
+        )
+    return render(request, "gestion/mods/lista.html", {"mods": mods, "query": query})
+
+
+def mod_crear(request):
+    """Alta de un mod con validación mediante ModelForm."""
+    form = ModForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        mod = form.save()
+        messages.success(request, f"Mod {mod.nombre} agregado correctamente.")
+        return redirect("stats:mods_gestion")
+    return render(
+        request, "gestion/mods/form.html",
+        {"form": form, "titulo": "Agregar mod", "accion": "Crear mod"},
+    )
+
+
+def mod_editar(request, pk):
+    """Modificación de un mod existente."""
+    mod = get_object_or_404(Mod, pk=pk)
+    form = ModForm(request.POST or None, instance=mod)
+    if request.method == "POST" and form.is_valid():
+        mod = form.save()
+        messages.success(request, f"Mod {mod.nombre} actualizado correctamente.")
+        return redirect("stats:mods_gestion")
+    return render(
+        request, "gestion/mods/form.html",
+        {"form": form, "titulo": f"Editar {mod.nombre}", "accion": "Guardar cambios", "mod": mod},
+    )
+
+
+def mod_eliminar(request, pk):
+    """Baja: GET presenta confirmación; POST elimina el registro."""
+    mod = get_object_or_404(Mod, pk=pk)
+    if request.method == "POST":
+        nombre = mod.nombre
+        mod.delete()
+        messages.success(request, f"Mod {nombre} eliminado correctamente.")
+        return redirect("stats:mods_gestion")
+    return render(request, "gestion/mods/confirmar_eliminar.html", {"mod": mod})

@@ -18,6 +18,12 @@ urlpatterns = [
     path("gestion/servidores/<int:pk>/editar/", views.servidor_editar, name="servidor_editar"),
     path("gestion/servidores/<int:pk>/eliminar/", views.servidor_eliminar, name="servidor_eliminar"),
 
+    # ABM de mods
+    path("gestion/mods/", views.mods_gestion, name="mods_gestion"),
+    path("gestion/mods/nuevo/", views.mod_crear, name="mod_crear"),
+    path("gestion/mods/<int:pk>/editar/", views.mod_editar, name="mod_editar"),
+    path("gestion/mods/<int:pk>/eliminar/", views.mod_eliminar, name="mod_eliminar"),
+
     # API JSON usada por la página pública
     path("api/jugadores/buscar/", views.api_buscar_jugador, name="api_buscar_jugador"),
     path("api/resumen/", views.api_resumen, name="api_resumen"),

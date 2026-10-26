@@ -1,7 +1,7 @@
 from django.test import TestCase
 from django.urls import reverse
 
-from .models import Jugador, Servidor, ServidorSnapshot
+from .models import Jugador, Mod, Servidor, ServidorSnapshot
 
 
 class JugadorABMTests(TestCase):
@@ -79,3 +79,68 @@ class ServidorABMTests(TestCase):
         })
         self.assertEqual(response.status_code, 200)
         self.assertEqual(Servidor.objects.filter(ip="mismo.test").count(), 1)
+
+
+class ModABMTests(TestCase):
+    def test_lista_y_busqueda_por_autor(self):
+        Mod.objects.create(nombre="Sodium", autor="CaffeineMC", version="1.21")
+        Mod.objects.create(nombre="Iris", autor="Otro")
+        response = self.client.get(reverse("stats:mods_gestion"), {"q": "caffeinemc"})
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Sodium")
+        self.assertNotContains(response, "Iris")
+
+    def test_alta_mod(self):
+        response = self.client.post(reverse("stats:mod_crear"), {
+            "nombre": "Create", "autor": "simibubi", "version": "1.20",
+            "descargas": 1200, "url": "https://example.com/create",
+        })
+        self.assertRedirects(response, reverse("stats:mods_gestion"))
+        self.assertTrue(Mod.objects.filter(nombre="Create", descargas=1200).exists())
+
+    def test_modificacion_mod(self):
+        mod = Mod.objects.create(nombre="ModViejo")
+        response = self.client.post(reverse("stats:mod_editar", args=[mod.pk]), {
+            "nombre": "ModNuevo", "autor": "Autor", "version": "1.21",
+            "descargas": 50, "url": "",
+        })
+        self.assertRedirects(response, reverse("stats:mods_gestion"))
+        mod.refresh_from_db()
+        self.assertEqual(mod.nombre, "ModNuevo")
+        self.assertEqual(mod.descargas, 50)
+
+    def test_baja_exige_post_y_confirmacion(self):
+        mod = Mod.objects.create(nombre="Borrable")
+        url = reverse("stats:mod_eliminar", args=[mod.pk])
+        self.assertEqual(self.client.get(url).status_code, 200)
+        self.assertTrue(Mod.objects.filter(pk=mod.pk).exists())
+        self.assertRedirects(self.client.post(url), reverse("stats:mods_gestion"))
+        self.assertFalse(Mod.objects.filter(pk=mod.pk).exists())
+
+    def test_nombre_duplicado_invalido(self):
+        Mod.objects.create(nombre="Sodium")
+        response = self.client.post(reverse("stats:mod_crear"), {
+            "nombre": "Sodium", "autor": "", "version": "",
+            "descargas": 0, "url": "",
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(Mod.objects.filter(nombre="Sodium").count(), 1)
+        self.assertTrue(response.context["form"].errors)
+
+    def test_descargas_negativas_invalidas(self):
+        response = self.client.post(reverse("stats:mod_crear"), {
+            "nombre": "Negativo", "autor": "", "version": "",
+            "descargas": -5, "url": "",
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Mod.objects.filter(nombre="Negativo").exists())
+        self.assertTrue(response.context["form"].errors)
+
+    def test_url_invalida(self):
+        response = self.client.post(reverse("stats:mod_crear"), {
+            "nombre": "URLMala", "autor": "", "version": "",
+            "descargas": 0, "url": "esto no es url",
+        })
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(Mod.objects.filter(nombre="URLMala").exists())
+        self.assertTrue(response.context["form"].errors)
