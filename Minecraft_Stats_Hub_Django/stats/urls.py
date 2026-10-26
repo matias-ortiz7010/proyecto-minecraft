@@ -12,6 +12,12 @@ urlpatterns = [
     path("gestion/jugadores/<int:pk>/editar/", views.jugador_editar, name="jugador_editar"),
     path("gestion/jugadores/<int:pk>/eliminar/", views.jugador_eliminar, name="jugador_eliminar"),
 
+    # ABM de servidores
+    path("gestion/servidores/", views.servidores_gestion, name="servidores_gestion"),
+    path("gestion/servidores/nuevo/", views.servidor_crear, name="servidor_crear"),
+    path("gestion/servidores/<int:pk>/editar/", views.servidor_editar, name="servidor_editar"),
+    path("gestion/servidores/<int:pk>/eliminar/", views.servidor_eliminar, name="servidor_eliminar"),
+
     # API JSON usada por la página pública
     path("api/jugadores/buscar/", views.api_buscar_jugador, name="api_buscar_jugador"),
     path("api/resumen/", views.api_resumen, name="api_resumen"),

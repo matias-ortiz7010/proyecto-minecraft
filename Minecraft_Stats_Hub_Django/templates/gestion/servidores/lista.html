@@ -1,0 +1,49 @@
+{% extends 'gestion/base_gestion.html' %}
+
+{% block title %}ABM de servidores{% endblock %}
+
+{% block content %}
+<section class="panel management-panel">
+  <div class="management-heading">
+    <div>
+      <p class="eyebrow">Sistema ABM</p>
+      <h1>Gestión de servidores</h1>
+      <p class="muted">Alta, baja, modificación y consulta de servidores guardados en Django.</p>
+    </div>
+    <a class="button-link" href="{% url 'stats:servidor_crear' %}">+ Agregar servidor</a>
+  </div>
+
+  <form class="management-search" method="get">
+    <input type="search" name="q" value="{{ query }}" placeholder="Buscar por nombre, IP o país..." aria-label="Buscar servidores">
+    <button type="submit">Buscar</button>
+    {% if query %}<a class="button-link button-secondary" href="{% url 'stats:servidores_gestion' %}">Limpiar</a>{% endif %}
+  </form>
+
+  <div class="table-scroll">
+    <table class="management-table">
+      <thead><tr><th>ID</th><th>Nombre</th><th>IP / Dominio</th><th>País</th><th>Jugadores</th><th>Estado</th><th>Actualizado</th><th>Acciones</th></tr></thead>
+      <tbody>
+        {% for servidor in servidores %}
+          <tr>
+            <td>{{ servidor.id }}</td>
+            <td><strong>{{ servidor.nombre }}</strong></td>
+            <td class="mono">{{ servidor.ip }}</td>
+            <td>{{ servidor.pais|default:"—" }}</td>
+            <td>{{ servidor.jugadores }}</td>
+            <td>{% if servidor.online %}<span class="status-online">En línea</span>{% else %}<span class="status-offline">Fuera de línea</span>{% endif %}</td>
+            <td>{{ servidor.actualizado_en|date:"d/m/Y H:i" }}</td>
+            <td><div class="row-actions">
+              <a class="action-link" href="{% url 'stats:servidor_editar' servidor.pk %}">Editar</a>
+              <a class="action-link danger-text" href="{% url 'stats:servidor_eliminar' servidor.pk %}">Eliminar</a>
+            </div></td>
+          </tr>
+        {% empty %}
+          <tr><td colspan="8">No hay servidores que coincidan con la búsqueda.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p class="data-note">Total mostrado: {{ servidores|length }} servidor{{ servidores|length|pluralize:"es" }}.</p>
+  <p class="data-note">Por ahora, el estado y el número de jugadores se cargan manualmente. Más adelante conectaremos una API para consultarlos automáticamente.</p>
+</section>
+{% endblock %}

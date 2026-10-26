@@ -1,0 +1,19 @@
+{% extends 'gestion/base_gestion.html' %}
+
+{% block title %}Eliminar {{ servidor.nombre }}{% endblock %}
+
+{% block content %}
+<section class="panel management-panel form-panel">
+  <p class="eyebrow danger-text">Baja</p>
+  <h1>Eliminar servidor</h1>
+  <div class="delete-warning">
+    <p>Estás por eliminar el servidor <strong>{{ servidor.nombre }}</strong> ({{ servidor.ip }}).</p>
+    <p class="muted">También se eliminará su historial guardado de estadísticas porque depende del servidor.</p>
+  </div>
+  <form method="post" class="form-actions">
+    {% csrf_token %}
+    <button class="danger-button" type="submit">Sí, eliminar</button>
+    <a class="button-link button-secondary" href="{% url 'stats:servidores_gestion' %}">Cancelar</a>
+  </form>
+</section>
+{% endblock %}

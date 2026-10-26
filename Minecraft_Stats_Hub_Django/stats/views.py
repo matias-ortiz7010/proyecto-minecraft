@@ -3,7 +3,7 @@ from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import JugadorForm
+from .forms import JugadorForm, ServidorForm
 from .models import Jugador, Mod, PvP, Servidor, Speedrun
 
 
@@ -216,4 +216,71 @@ def jugador_eliminar(request, pk):
         request,
         "gestion/jugadores/confirmar_eliminar.html",
         {"jugador": jugador},
+    )
+
+
+# -----------------------------
+# ABM de servidores
+# -----------------------------
+
+def servidores_gestion(request):
+    """Consulta/listado y búsqueda por nombre, IP/dominio o país."""
+    query = request.GET.get("q", "").strip()
+    servidores = Servidor.objects.all()
+    if query:
+        servidores = servidores.filter(
+            Q(nombre__icontains=query)
+            | Q(ip__icontains=query)
+            | Q(pais__icontains=query)
+        )
+    return render(
+        request,
+        "gestion/servidores/lista.html",
+        {"servidores": servidores, "query": query},
+    )
+
+
+def servidor_crear(request):
+    """Alta de servidor en la base de datos."""
+    form = ServidorForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        servidor = form.save()
+        messages.success(request, f"Servidor {servidor.nombre} agregado correctamente.")
+        return redirect("stats:servidores_gestion")
+    return render(
+        request,
+        "gestion/servidores/form.html",
+        {"form": form, "titulo": "Agregar servidor", "accion": "Crear servidor"},
+    )
+
+
+def servidor_editar(request, pk):
+    """Modificación de un servidor existente."""
+    servidor = get_object_or_404(Servidor, pk=pk)
+    form = ServidorForm(request.POST or None, instance=servidor)
+    if request.method == "POST" and form.is_valid():
+        servidor = form.save()
+        messages.success(request, f"Servidor {servidor.nombre} actualizado correctamente.")
+        return redirect("stats:servidores_gestion")
+    return render(
+        request,
+        "gestion/servidores/form.html",
+        {
+            "form": form, "titulo": f"Editar {servidor.nombre}",
+            "accion": "Guardar cambios", "servidor": servidor,
+        },
+    )
+
+
+def servidor_eliminar(request, pk):
+    """Baja de servidor; solo permite eliminar con confirmación por POST."""
+    servidor = get_object_or_404(Servidor, pk=pk)
+    if request.method == "POST":
+        nombre = servidor.nombre
+        servidor.delete()
+        messages.success(request, f"Servidor {nombre} eliminado correctamente.")
+        return redirect("stats:servidores_gestion")
+    return render(
+        request, "gestion/servidores/confirmar_eliminar.html",
+        {"servidor": servidor},
     )

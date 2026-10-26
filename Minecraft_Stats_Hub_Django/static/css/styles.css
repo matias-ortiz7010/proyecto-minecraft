@@ -292,3 +292,14 @@ button:disabled { cursor: wait; opacity: 0.7; }
   .management-heading { flex-direction: column; }
   .management-heading .button-link { width: 100%; }
 }
+
+/* Campos de ABM de servidores: el checkbox no debe ocupar todo el ancho. */
+.form-group input[type="checkbox"] {
+  width: 20px;
+  min-width: 20px;
+  height: 20px;
+  flex: none;
+  accent-color: var(--accent);
+}
+.status-online { color: #8be54a; font-weight: 700; }
+.status-offline { color: #ff8c8c; font-weight: 700; }

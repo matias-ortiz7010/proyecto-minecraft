@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Jugador
+from .models import Jugador, Servidor
 
 
 class JugadorForm(forms.ModelForm):
@@ -30,3 +30,31 @@ class JugadorForm(forms.ModelForm):
     def clean_pais(self):
         value = self.cleaned_data.get("pais", "")
         return value.strip()
+
+
+class ServidorForm(forms.ModelForm):
+    class Meta:
+        model = Servidor
+        fields = ["nombre", "ip", "pais", "jugadores", "online"]
+        labels = {
+            "nombre": "Nombre del servidor",
+            "ip": "Dirección del servidor (IP o dominio)",
+            "pais": "País",
+            "jugadores": "Jugadores conectados (dato manual)",
+            "online": "En línea (dato manual)",
+        }
+        widgets = {
+            "nombre": forms.TextInput(attrs={"placeholder": "Ej: Mi Servidor"}),
+            "ip": forms.TextInput(attrs={"placeholder": "Ej: play.ejemplo.net"}),
+            "pais": forms.TextInput(attrs={"placeholder": "Ej: Argentina"}),
+            "jugadores": forms.NumberInput(attrs={"min": 0}),
+        }
+
+    def clean_nombre(self):
+        return self.cleaned_data["nombre"].strip()
+
+    def clean_ip(self):
+        return self.cleaned_data["ip"].strip()
+
+    def clean_pais(self):
+        return self.cleaned_data.get("pais", "").strip()
