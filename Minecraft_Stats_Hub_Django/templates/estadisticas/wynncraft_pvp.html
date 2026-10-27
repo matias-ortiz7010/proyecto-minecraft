@@ -1,0 +1,63 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PvP Wynncraft | Minecraft Stats Hub</title>
+  <link rel="stylesheet" href="{% static 'css/wynncraft_pvp.css' %}">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="{% url 'stats:index' %}">◈ Minecraft Stats Hub</a>
+    <nav aria-label="Navegación">
+      <a href="{% url 'stats:index' %}#estadisticas">Estadísticas</a>
+      <a href="{% url 'stats:estadisticas_pvp_local' %}">PvP registrado</a>
+      <a href="{% url 'stats:wynncraft_pvp' %}" aria-current="page">PvP Wynncraft</a>
+    </nav>
+  </header>
+  <main>
+    <section class="panel head">
+      <p class="eyebrow">CONSULTA EXTERNA · DATOS PÚBLICOS</p>
+      <h1>PvP real de Wynncraft</h1>
+      <p>Consultá kills y muertes PvP de jugadores del servidor Wynncraft. No necesitás clave API. Estos valores <strong>no son estadísticas globales de Minecraft</strong> ni datos de Hypixel.</p>
+    </section>
+
+    <section class="panel">
+      <form method="get" action="{% url 'stats:wynncraft_pvp' %}" class="search">
+        <label for="nombre">Nombre de Minecraft Java</label>
+        <div class="searchrow">
+          <input name="nombre" id="nombre" value="{{ nombre }}" maxlength="16" pattern="[A-Za-z0-9_]{1,16}" placeholder="Ej.: Salted" autocomplete="off" required>
+          <button type="submit">Buscar estadísticas</button>
+        </div>
+      </form>
+      {% if mensaje %}<p class="alert" role="status">{{ mensaje }}</p>{% endif %}
+      {% if not nombre %}<p class="hint">Probá buscar un jugador de Wynncraft, por ejemplo <strong>Salted</strong>. Los jugadores que nunca entraron a Wynncraft pueden no tener perfil.</p>{% endif %}
+    </section>
+
+    {% if resultado %}
+      <section class="panel" aria-live="polite">
+        <p class="eyebrow">PERFIL PÚBLICO DE WYNNCRAFT</p>
+        <h2>{{ resultado.jugador }}</h2>
+        {% if resultado.uuid %}<p class="muted">UUID: <code>{{ resultado.uuid }}</code></p>{% endif %}
+        {% if resultado.disponible %}
+        <div class="metrics">
+          <article><span>Kills PvP</span><strong>{{ resultado.kills }}</strong></article>
+          <article><span>Muertes PvP</span><strong>{{ resultado.muertes }}</strong></article>
+          <article><span>Ratio K/D</span><strong>{{ resultado.ratio }}</strong></article>
+        </div>
+        {% else %}
+        <p class="alert">Wynncraft devolvió el perfil, pero las estadísticas PvP no están disponibles públicamente o están ocultas.</p>
+        {% endif %}
+        <p class="muted">Fuente: API oficial de Wynncraft. Los datos pueden estar en caché unos minutos y sujetos a las opciones de privacidad del jugador.</p>
+      </section>
+    {% endif %}
+
+    <footer>
+      <a href="{% url 'stats:estadisticas_pvp_local' %}">↩ Volver al análisis PvP local</a>
+      <span>Esta sección no modifica tu ABM, ni guarda datos externos en SQLite.</span>
+      <a href="https://docs.wynncraft.com/modules/player/get-player" target="_blank" rel="noopener noreferrer">Documentación de la fuente oficial ↗</a>
+    </footer>
+  </main>
+</body>
+</html>

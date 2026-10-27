@@ -14,9 +14,12 @@ from .hypixel_pvp import estadisticas_pvp_hypixel
 
 from .pvp_local import estadisticas_pvp_local
 
+from .wynncraft_pvp import wynncraft_pvp, redireccion_pvp_hypixel
+
 urlpatterns = [
+    path("estadisticas/pvp/wynncraft/", wynncraft_pvp, name="wynncraft_pvp"),
     path("estadisticas/pvp/local/", estadisticas_pvp_local, name="estadisticas_pvp_local"),
-    path("estadisticas/pvp/hypixel/", estadisticas_pvp_hypixel, name="hypixel_pvp"),
+    path("estadisticas/pvp/hypixel/", redireccion_pvp_hypixel, name="hypixel_pvp"),
     path("gestion/ingresar/", LoginView.as_view(
         template_name="gestion/login.html",
         authentication_form=StaffLoginForm,

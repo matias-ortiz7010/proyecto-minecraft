@@ -31,7 +31,7 @@
       {% else %}
       <a href="{% url 'stats:gestion_login' %}">Administración</a>
       {% endif %}
-          <a href="{% url 'stats:hypixel_pvp' %}">PvP Hypixel</a>
+          <a href="{% url 'stats:wynncraft_pvp' %}">PvP Wynncraft</a>
 </nav>
   </header>
 
@@ -92,10 +92,10 @@
           <small>Nombre, UUID y skin pública de Minecraft Java</small>
           <span class="home-stats-cta">Buscar jugador ↗</span>
         </a>
-        <a class="home-stats-link" href="{% url 'stats:hypixel_pvp' %}">
+        <a class="home-stats-link" href="{% url 'stats:wynncraft_pvp' %}">
           <span class="home-stats-icon" aria-hidden="true">⚔️</span>
-          <strong>PvP Hypixel</strong>
-          <small>Consultá Bed Wars, SkyWars y Duels por jugador (requiere API key)</small>
+          <strong>PvP Wynncraft</strong>
+          <small>Consultá Kills, muertes y ratio K/D públicos de Wynncraft, sin clave</small>
           <span class="home-stats-cta">Ver estadísticas PvP ↗</span>
         </a>
       </div>
@@ -201,7 +201,7 @@
       <p>Todavía no hay estadísticas PvP cargadas.</p>
       {% endif %}
           <div class="home-source-action">
-        <a class="home-primary-link" href="{% url 'stats:hypixel_pvp' %}">⚔️ Consultar PvP real en Hypixel ↗</a>
+        <a class="home-primary-link" href="{% url 'stats:wynncraft_pvp' %}">⚔️ Consultar PvP real en Wynncraft ↗</a>
         <span>Datos externos · No modifica el ABM · Requiere clave de API</span>
       </div>
       <!-- MSH_PVP_LOCAL_LINK -->

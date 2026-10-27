@@ -18,5 +18,8 @@ class TestHypixelStats(SimpleTestCase):
     @patch.dict('os.environ', {}, clear=True)
     def test_mensaje_sin_clave(self):
         respuesta = Client().get('/estadisticas/pvp/hypixel/')
-        self.assertEqual(respuesta.status_code, 200)
-        self.assertContains(respuesta, 'HYPIXEL_API_KEY')
+        self.assertRedirects(
+            respuesta,
+            "/estadisticas/pvp/wynncraft/",
+            fetch_redirect_response=False,
+)
