@@ -1,0 +1,25 @@
+/* Vista pública de clasificaciones externas; no afecta el diseño de otros ABM. */
+.src-container{max-width:1180px;margin:38px auto 80px;padding:0 20px;color:#f2f6f1}
+.src-intro,.src-card{border:1px solid #28462a;background:linear-gradient(160deg,#121c16,#0b120e);border-radius:16px;padding:28px;margin-bottom:22px}
+.src-kicker{color:#91df08;letter-spacing:.17em;font-size:.76rem;font-weight:800;margin:0 0 10px}
+.src-intro h1{font-size:clamp(1.8rem,4vw,2.8rem);margin:0 0 12px}
+.src-intro p,.src-notice,.src-footnote{line-height:1.6}
+.src-notice,.src-footnote{color:#c6d7c8;font-size:.92rem}
+.src-error{border:1px solid #c77b26;border-radius:12px;padding:20px;background:#30210e;line-height:1.6}
+.src-error a,.src-heading a,.src-scroll a,.src-back{color:#a3f016}
+.src-filters{display:flex;flex-wrap:wrap;gap:14px;align-items:flex-end;margin-bottom:22px}
+.src-filter{flex:1 1 220px;min-width:170px;display:flex;flex-direction:column;gap:6px}
+.src-filter label{font-weight:750}
+.src-filter select{width:100%;background:#07100c;color:#f5f7f5;border:1px solid #365239;padding:11px 12px;border-radius:8px;min-height:44px}
+.src-filter select:focus{outline:2px solid #91df08;outline-offset:1px}
+.src-submit{background:#91df08;border:0;border-radius:9px;color:#07100c;font-weight:900;padding:13px 24px;cursor:pointer}
+.src-submit:hover{background:#b8ff43}
+.src-heading{display:flex;gap:18px;justify-content:space-between;align-items:center;margin-bottom:18px}
+.src-heading h2{margin:0;font-size:1.5rem}
+.src-scroll{overflow-x:auto}
+.src-scroll table{width:100%;border-collapse:collapse;text-align:left;min-width:690px}
+.src-scroll th{color:#91df08;font-weight:750;border-bottom:1px solid #3b543b;padding:11px 8px}
+.src-scroll td{border-bottom:1px solid #253529;padding:13px 8px;vertical-align:middle}
+.src-time{font-weight:850;color:#abeb39;white-space:nowrap}
+.src-back{display:inline-block;font-weight:700;margin:10px 0}
+@media(max-width:700px){.src-container{margin-top:18px;padding:0 12px}.src-intro,.src-card{padding:18px}.src-heading{align-items:start;flex-direction:column}}

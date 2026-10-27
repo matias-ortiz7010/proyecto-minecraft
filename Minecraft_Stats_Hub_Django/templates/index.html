@@ -133,6 +133,7 @@
       </div>
       <div class="chart-wrap"><canvas id="chart" role="img" aria-label="Gráfico de tiempos de speedrun en segundos"></canvas></div>
       <p class="data-note">Compará tiempos solo entre speedruns de la misma categoría y reglas. La verificación depende de los registros del ABM.</p>
+      <p class="data-note"><a class="inline-link" href="{% url 'stats:speedruns_externos' %}">Consultar speedruns publicados en speedrun.com (fuente externa) ↗</a></p>
 {% if user.is_staff %}
       <p class="data-note"><a class="inline-link" href="{% url 'stats:speedruns_gestion' %}">Administrar speedruns (ABM) →</a></p>
       {% endif %}
