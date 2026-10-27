@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Minecraft Stats Hub</title>
   <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="stylesheet" href="{% static 'css/home_dashboard.css' %}">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -16,6 +17,7 @@
     </a>
     <nav>
       <a href="#inicio">Inicio</a>
+      <a href="{% url 'stats:estadisticas_servidores' %}">Estadísticas</a>
       <a href="#jugadores">Jugadores</a>
       <a href="#speedrun">Speedrun</a>
       <a href="#pvp">PvP</a>
@@ -37,30 +39,79 @@
       <img class="hero-banner" src="{% static 'assets/banner.png' %}" alt="Banner de Minecraft Stats Hub">
     </section>
 
-    <section class="quick-stats" aria-label="Estadísticas destacadas">
-      <div class="cards">
-        <article class="card"><h3>Récord</h3><p class="big" id="record-value">{% if record %}{{ record.tiempo_formateado }}{% else %}—{% endif %}</p></article>
-        <article class="card"><h3>Jugador top</h3><p class="big" id="player-value">{% if top_pvp %}{{ top_pvp.jugador.nombre }}{% else %}—{% endif %}</p></article>
-        <article class="card"><h3>Servidor top</h3><p class="big" id="server-value">{% if top_server %}{{ top_server.nombre }}{% else %}—{% endif %}</p></article>
-        <article class="card"><h3>Mod top</h3><p class="big" id="mod-value">{% if top_mod %}{{ top_mod.nombre }}{% else %}—{% endif %}</p></article>
+    <section class="home-welcome" aria-label="Explorar Minecraft Stats Hub">
+      <div class="home-welcome-text">
+        <p class="home-eyebrow">MINECRAFT STATS HUB · DATOS Y ANÁLISIS</p>
+        <h1>Tu mundo, en números.</h1>
+        <p>Explorá jugadores, speedruns, mods y servidores. Los datos registrados se consultan desde Django y el historial permite analizar cómo evoluciona la actividad.</p>
       </div>
-      <p class="data-note">Los datos iniciales salen de la base de datos de Django. Los datos demo no representan rankings oficiales.</p>
+      <div class="home-welcome-actions">
+        <a class="home-primary-link" href="{% url 'stats:estadisticas_servidores' %}">Ver gráficos de servidores <span aria-hidden="true">↗</span></a>
+        <a class="home-secondary-link" href="#servidores">Estado de servidores <span aria-hidden="true">↓</span></a>
+      </div>
+    </section>
+
+    <section class="quick-stats home-overview" aria-label="Estadísticas destacadas">
+      <div class="home-section-intro">
+        <div>
+          <p class="home-eyebrow">PANORAMA GENERAL</p>
+          <h2>Estadísticas destacadas</h2>
+        </div>
+        <span class="home-caption-tag">Datos registrados en Django</span>
+      </div>
+      <div class="cards">
+        <article class="card home-stat"><span class="home-stat-icon" aria-hidden="true">🏆</span><h3>Menor tiempo registrado</h3><p class="big" id="record-value">{% if record %}{{ record.tiempo_formateado }}{% else %}—{% endif %}</p><a href="#speedrun" class="home-stat-link">Ver speedruns →</a></article>
+        <article class="card home-stat"><span class="home-stat-icon" aria-hidden="true">⚔️</span><h3>Jugador con más victorias PvP</h3><p class="big" id="player-value">{% if top_pvp %}{{ top_pvp.jugador.nombre }}{% else %}—{% endif %}</p><a href="#pvp" class="home-stat-link">Ver PvP →</a></article>
+        <article class="card home-stat"><span class="home-stat-icon" aria-hidden="true">🌐</span><h3>Servidor con más jugadores</h3><p class="big" id="server-value">{% if top_server %}{{ top_server.nombre }}{% else %}—{% endif %}</p><a href="#servidores" class="home-stat-link">Ver servidores →</a></article>
+        <article class="card home-stat"><span class="home-stat-icon" aria-hidden="true">🧩</span><h3>Mod con más descargas registradas</h3><p class="big" id="mod-value">{% if top_mod %}{{ top_mod.nombre }}{% else %}—{% endif %}</p><a href="#mods" class="home-stat-link">Ver mods →</a></article>
+      </div>
+      <p class="data-note">Estos son registros de tu base de datos, no rankings oficiales. Los tiempos de speedruns de categorías distintas no son directamente comparables.</p>
+    </section>
+
+    <section id="servidores" class="panel">
+      <div class="section-heading home-server-heading">
+        <div>
+          <p class="home-eyebrow">ACTIVIDAD DE SERVIDORES</p>
+          <h2>🌐 Servidores</h2>
+          <span id="server-refresh-status" class="muted home-server-status">Últimos datos guardados</span>
+        </div>
+        <a class="home-primary-link" href="{% url 'stats:estadisticas_servidores' %}">Ver historial y gráficos ↗</a>
+      </div>
+      <div class="table-scroll">
+        <table>
+          <thead><tr><th>Servidor</th><th>IP</th><th>Jugadores</th><th>Estado</th></tr></thead>
+          <tbody id="servers-body">
+            {% for servidor in servidores %}
+            <tr>
+              <td>{{ servidor.nombre }}</td>
+              <td>{{ servidor.ip }}</td>
+              <td>{{ servidor.jugadores }}</td>
+              <td>{% if servidor.online %}🟢 Online{% else %}🔴 Offline{% endif %}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="4">Todavía no hay servidores cargados.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <p class="data-note">La página vuelve a consultar Django cada 30 segundos. Las mediciones externas se obtienen aproximadamente cada 5 minutos mientras el actualizador de Codespaces esté en funcionamiento. Si la API falla, podría mostrarse el último valor guardado, no el estado actual.</p>
     </section>
 
     <section id="jugadores" class="panel">
-      <h2>👤 Buscar jugador</h2>
+      <div class="home-panel-lead"><div><p class="home-eyebrow">PERFILES Y ESTADÍSTICAS</p><h2>👤 Buscar jugador</h2></div><span class="home-caption-tag">Consulta a Django</span></div>
       <div class="search-row">
         <input id="search" placeholder="Dream, lowk3y_..." autocomplete="off">
         <button id="search-button" type="button">Buscar</button>
       </div>
       <div id="resultado" class="result" aria-live="polite"></div>
+      <p class="data-note">Buscá jugadores registrados en tu base de datos. Las estadísticas externas del perfil no se consultan automáticamente.</p>
 {% if user.is_staff %}
       <p class="data-note"><a class="inline-link" href="{% url 'stats:jugadores_gestion' %}">Administrar jugadores (ABM) →</a></p>
       {% endif %}
     </section>
 
     <section id="speedrun" class="panel">
-      <h2>🏆 Speedrun</h2>
+      <div class="home-panel-lead"><div><p class="home-eyebrow">MARCAS REGISTRADAS</p><h2>🏆 Speedrun</h2></div><span class="home-caption-tag">Ordenadas por tiempo</span></div>
       <div class="table-scroll">
         <table>
           <thead><tr><th>#</th><th>Jugador</th><th>Categoría</th><th>Tiempo</th><th>Versión</th><th>Verificado</th></tr></thead>
@@ -80,7 +131,8 @@
           </tbody>
         </table>
       </div>
-      <div class="chart-wrap"><canvas id="chart"></canvas></div>
+      <div class="chart-wrap"><canvas id="chart" role="img" aria-label="Gráfico de tiempos de speedrun en segundos"></canvas></div>
+      <p class="data-note">Compará tiempos solo entre speedruns de la misma categoría y reglas. La verificación depende de los registros del ABM.</p>
 {% if user.is_staff %}
       <p class="data-note"><a class="inline-link" href="{% url 'stats:speedruns_gestion' %}">Administrar speedruns (ABM) →</a></p>
       {% endif %}
@@ -89,6 +141,7 @@
     </section>
 
     <section id="pvp" class="panel">
+      <p class="home-eyebrow">COMBATE</p>
       <h2>⚔️ PvP</h2>
       {% if top_pvp %}
       <p><strong>{{ top_pvp.jugador.nombre }}</strong>: {{ top_pvp.victorias }} victorias, {{ top_pvp.derrotas }} derrotas, {{ top_pvp.kills }} kills y {{ top_pvp.winrate }}% de winrate.</p>
@@ -98,6 +151,7 @@
     </section>
 
     <section id="mods" class="panel">
+      <p class="home-eyebrow">CREACIONES DE LA COMUNIDAD</p>
       <h2>🧩 Mods</h2>
       <ul class="clean-list">
         {% for mod in mods %}
@@ -111,29 +165,14 @@
       {% endif %}
     </section>
 
-    <section id="servidores" class="panel">
-      <div class="section-heading">
-        <h2>🌐 Servidores</h2>
-        <span id="server-refresh-status" class="muted">Base de datos</span>
+
+    <section class="home-explore" aria-label="Análisis de datos históricos">
+      <div>
+        <p class="home-eyebrow">HISTORIAL Y TENDENCIAS</p>
+        <h2>¿Cómo cambia la actividad de los servidores?</h2>
+        <p>Consultá los registros guardados para ver evolución, promedio, máximos y mínimos. El gráfico crece a medida que se recopilan nuevas mediciones.</p>
       </div>
-      <div class="table-scroll">
-        <table>
-          <thead><tr><th>Servidor</th><th>IP</th><th>Jugadores</th><th>Estado</th></tr></thead>
-          <tbody id="servers-body">
-            {% for servidor in servidores %}
-            <tr>
-              <td>{{ servidor.nombre }}</td>
-              <td>{{ servidor.ip }}</td>
-              <td>{{ servidor.jugadores }}</td>
-              <td>{% if servidor.online %}🟢 Online{% else %}🔴 Offline{% endif %}</td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="4">Todavía no hay servidores cargados.</td></tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-      <p class="data-note">La página lee Django cada 30 segundos. La actualización automática de servidores se obtiene de mcsrvstat.us cada 5 minutos mientras el comando de actualización esté activo en Codespaces. Si la API falla se conserva el último valor guardado; puede no ser el estado actual.</p>
+      <a class="home-primary-link" href="{% url 'stats:estadisticas_servidores' %}">Abrir estadísticas ↗</a>
     </section>
   </main>
 
