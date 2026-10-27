@@ -44,6 +44,6 @@
     </table>
   </div>
   <p class="data-note">Total mostrado: {{ servidores|length }} servidor{{ servidores|length|pluralize:"es" }}.</p>
-  <p class="data-note">Por ahora, el estado y el número de jugadores se cargan manualmente. Más adelante conectaremos una API para consultarlos automáticamente.</p>
+  <p class="data-note">Si está ejecutándose el actualizador, estos valores provienen de las consultas a las APIs de estado. <a class="inline-link" href="{% url 'stats:estadisticas_servidores' %}">Ver historial y gráficos</a>.</p>
 </section>
 {% endblock %}

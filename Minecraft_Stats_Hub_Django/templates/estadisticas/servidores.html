@@ -1,0 +1,78 @@
+{% extends 'gestion/base_gestion.html' %}
+{% load static %}
+{% block title %}Estadísticas de servidores{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/estadisticas_servidores.css' %}">
+<section class="panel management-panel insights-panel">
+  <div class="management-heading">
+    <div>
+      <p class="eyebrow">Análisis de datos reales</p>
+      <h1>Estadísticas de servidores</h1>
+      <p class="muted">Historial guardado por Django desde las consultas a la API de Minecraft.</p>
+    </div>
+    <a class="button-link button-secondary" href="{% url 'stats:servidores_gestion' %}">Volver a servidores</a>
+  </div>
+
+  {% if servidores %}
+  <form class="insights-filtros" action="" method="get">
+    <label for="sel-servidor">Servidor
+      <select id="sel-servidor" name="servidor">
+        {% for item in servidores %}
+        <option value="{{ item.pk }}" {% if servidor.pk == item.pk %}selected{% endif %}>{{ item.nombre }} · {{ item.ip }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label for="sel-periodo">Período
+      <select id="sel-periodo" name="horas">
+        {% for periodo in periodos %}
+        <option value="{{ periodo }}" {% if horas == periodo %}selected{% endif %}>{% if periodo == 6 %}Últimas 6 horas{% elif periodo == 24 %}Últimas 24 horas{% elif periodo == 72 %}Últimos 3 días{% else %}Últimos 7 días{% endif %}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <button type="submit">Aplicar filtros</button>
+    <a class="button-link button-secondary" href="?servidor={{ servidor.pk }}&amp;horas={{ horas }}">Actualizar vista</a>
+  </form>
+
+  <div class="insights-summary" aria-label="Indicadores históricos">
+    <div class="insights-kpi"><span>Máximo</span><strong>{% if maximo is not None %}{{ maximo }}{% else %}—{% endif %}</strong><small>jugadores conectados</small></div>
+    <div class="insights-kpi"><span>Mínimo</span><strong>{% if minimo is not None %}{{ minimo }}{% else %}—{% endif %}</strong><small>jugadores conectados</small></div>
+    <div class="insights-kpi"><span>Promedio</span><strong>{% if promedio is not None %}{{ promedio }}{% else %}—{% endif %}</strong><small>jugadores conectados</small></div>
+    <div class="insights-kpi"><span>Muestras</span><strong>{{ muestras_online }} / {{ muestras }}</strong><small>en línea / totales</small></div>
+  </div>
+
+  <section class="insights-chart" aria-label="Gráfico del historial">
+    <h2>Jugadores conectados a {{ servidor.nombre }}</h2>
+    {% if puntos %}
+      <div class="insights-canvas"><canvas id="grafico-servidor" aria-label="Jugadores registrados a lo largo del tiempo" role="img"></canvas></div>
+      <p class="insights-chart-error" id="grafico-error" hidden>El gráfico no pudo cargarse. Podés consultar las lecturas en la tabla.</p>
+    {% else %}
+      <p class="insights-empty">Todavía no hay mediciones dentro de este período. Ejecutá <code>python manage.py actualizar_servidores</code> y volvé a consultar.</p>
+    {% endif %}
+    <p class="insights-note">El promedio, mínimo y máximo se calculan solo con lecturas confirmadas en línea. Las lecturas fuera de línea aparecen como interrupciones en la línea. Los datos no son instantáneos: se actualizan cuando corre el comando de Django (habitualmente cada 5 minutos).</p>
+    {% if ultima_muestra %}<p class="insights-note">Última medición del período: <strong>{{ ultima_muestra.registrado_en|date:"d/m/Y H:i" }}</strong> (hora del servidor).</p>{% endif %}
+  </section>
+
+  {% if recientes %}
+  <section class="insights-history">
+    <h2>Últimas mediciones del período</h2>
+    <div class="table-scroll"><table class="management-table">
+      <thead><tr><th>Fecha y hora</th><th>Estado</th><th>Jugadores</th></tr></thead>
+      <tbody>{% for muestra in recientes %}<tr>
+        <td>{{ muestra.registrado_en|date:"d/m/Y H:i" }}</td>
+        <td>{% if muestra.online %}<span class="status-online">En línea</span>{% else %}<span class="status-offline">Fuera de línea</span>{% endif %}</td>
+        <td>{% if muestra.online %}{{ muestra.jugadores }}{% else %}—{% endif %}</td>
+      </tr>{% endfor %}</tbody>
+    </table></div>
+  </section>
+  {% endif %}
+  {{ puntos|json_script:"puntos-servidores" }}
+  {% else %}
+    <p class="insights-empty">Todavía no hay servidores registrados. Primero agregá uno desde el ABM y después ejecutá el comando de actualización.</p>
+  {% endif %}
+</section>
+{% if servidor and puntos %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js" defer></script>
+<script src="{% static 'js/estadisticas_servidores.js' %}" defer></script>
+{% endif %}
+{% endblock %}

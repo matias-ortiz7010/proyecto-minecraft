@@ -3,6 +3,7 @@ from django.urls import path
 
 from .auth_forms import StaffLoginForm
 from . import views
+from .analitica_servidores import estadisticas_servidores
 
 app_name = "stats"
 
@@ -39,6 +40,9 @@ urlpatterns = [
     path("gestion/speedruns/nuevo/", views.speedrun_crear, name="speedrun_crear"),
     path("gestion/speedruns/<int:pk>/editar/", views.speedrun_editar, name="speedrun_editar"),
     path("gestion/speedruns/<int:pk>/eliminar/", views.speedrun_eliminar, name="speedrun_eliminar"),
+
+    # Analítica pública de datos históricos de servidores
+    path("estadisticas/servidores/", estadisticas_servidores, name="estadisticas_servidores"),
 
     # API JSON usada por la página pública
     path("api/jugadores/buscar/", views.api_buscar_jugador, name="api_buscar_jugador"),

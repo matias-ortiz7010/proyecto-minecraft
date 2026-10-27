@@ -16,6 +16,7 @@
     </a>
     <nav>
       <a href="{% url 'stats:index' %}">Sitio</a>
+      <a href="{% url 'stats:estadisticas_servidores' %}">Estadísticas</a>
       {% if user.is_staff %}
       <a href="{% url 'stats:jugadores_gestion' %}">ABM Jugadores</a>
       <a href="{% url 'stats:servidores_gestion' %}">ABM Servidores</a>
