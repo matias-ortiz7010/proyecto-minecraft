@@ -1,0 +1,11 @@
+{% load static %}
+<!DOCTYPE html><html lang="es"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Mods de Modrinth{% endblock %} | Minecraft Stats Hub</title>
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<link rel="stylesheet" href="{% static 'css/modrinth_externos.css' %}">
+</head><body><header>
+<a class="brand" href="{% url 'stats:index' %}"><img class="site-logo" src="{% static 'assets/logo.png' %}" alt="Minecraft Stats Hub"><span>Minecraft Stats Hub</span></a>
+<nav><a href="{% url 'stats:index' %}">Inicio</a><a href="{% url 'stats:index' %}#mods">Mods locales</a>
+<a href="{% url 'stats:mods_externos' %}">Modrinth</a>{% if user.is_staff %}<a href="{% url 'stats:mods_gestion' %}">ABM Mods</a>{% endif %}</nav></header>
+<main class="mr-container">{% block content %}{% endblock %}</main></body></html>

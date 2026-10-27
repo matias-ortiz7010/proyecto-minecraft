@@ -14,6 +14,13 @@
     <a class="button-link button-secondary" href="{% url 'stats:servidores_gestion' %}">Volver a servidores</a>
   </div>
 
+  <nav class="insights-related" aria-label="Explorar otras estadísticas">
+    <span>Otras estadísticas:</span>
+    <a href="{% url 'stats:speedruns_externos' %}">🏆 Speedruns reales ↗</a>
+    <a href="{% url 'stats:mods_externos' %}">🧩 Mods reales ↗</a>
+    <a href="{% url 'stats:index' %}#estadisticas">Ver todas las estadísticas ↗</a>
+  </nav>
+
   {% if servidores %}
   <form class="insights-filtros" action="" method="get">
     <label for="sel-servidor">Servidor

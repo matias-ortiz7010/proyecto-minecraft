@@ -17,7 +17,7 @@
     </a>
     <nav>
       <a href="#inicio">Inicio</a>
-      <a href="{% url 'stats:estadisticas_servidores' %}">Estadísticas</a>
+      <a href="#estadisticas">Estadísticas</a>
       <a href="#jugadores">Jugadores</a>
       <a href="#speedrun">Speedrun</a>
       <a href="#pvp">PvP</a>
@@ -48,6 +48,35 @@
       <div class="home-welcome-actions">
         <a class="home-primary-link" href="{% url 'stats:estadisticas_servidores' %}">Ver gráficos de servidores <span aria-hidden="true">↗</span></a>
         <a class="home-secondary-link" href="#servidores">Estado de servidores <span aria-hidden="true">↓</span></a>
+      </div>
+    </section>
+
+    <!-- Centro de acceso a todas las estadísticas: las APIs externas NO modifican los ABM. -->
+    <section id="estadisticas" class="home-stats-hub" aria-label="Explorar estadísticas de Minecraft">
+      <div class="home-stats-hub-heading">
+        <p class="home-eyebrow">CONSULTAR ESTADÍSTICAS</p>
+        <h2>Elegí qué querés explorar</h2>
+        <p>Accedé a los gráficos de servidores o consultá speedruns y mods publicados en fuentes externas.</p>
+      </div>
+      <div class="home-stats-links">
+        <a class="home-stats-link" href="{% url 'stats:estadisticas_servidores' %}">
+          <span class="home-stats-icon" aria-hidden="true">🌐</span>
+          <strong>Servidores</strong>
+          <small>Jugadores conectados, historial y gráficos</small>
+          <span class="home-stats-cta">Ver estadísticas ↗</span>
+        </a>
+        <a class="home-stats-link" href="{% url 'stats:speedruns_externos' %}">
+          <span class="home-stats-icon" aria-hidden="true">🏆</span>
+          <strong>Speedruns</strong>
+          <small>Clasificaciones y filtros de speedrun.com</small>
+          <span class="home-stats-cta">Ver speedruns ↗</span>
+        </a>
+        <a class="home-stats-link" href="{% url 'stats:mods_externos' %}">
+          <span class="home-stats-icon" aria-hidden="true">🧩</span>
+          <strong>Mods</strong>
+          <small>Buscar mods, descargas y versiones en Modrinth</small>
+          <span class="home-stats-cta">Explorar mods ↗</span>
+        </a>
       </div>
     </section>
 
@@ -133,7 +162,7 @@
       </div>
       <div class="chart-wrap"><canvas id="chart" role="img" aria-label="Gráfico de tiempos de speedrun en segundos"></canvas></div>
       <p class="data-note">Compará tiempos solo entre speedruns de la misma categoría y reglas. La verificación depende de los registros del ABM.</p>
-      <p class="data-note"><a class="inline-link" href="{% url 'stats:speedruns_externos' %}">Consultar speedruns publicados en speedrun.com (fuente externa) ↗</a></p>
+      <div class="home-source-action"><a class="home-primary-link" href="{% url 'stats:speedruns_externos' %}">🏆 Ver Speedruns reales ↗</a><span>Fuente: speedrun.com · No modifica los registros del ABM</span></div>
 {% if user.is_staff %}
       <p class="data-note"><a class="inline-link" href="{% url 'stats:speedruns_gestion' %}">Administrar speedruns (ABM) →</a></p>
       {% endif %}
@@ -154,6 +183,7 @@
     <section id="mods" class="panel">
       <p class="home-eyebrow">CREACIONES DE LA COMUNIDAD</p>
       <h2>🧩 Mods</h2>
+      <div class="home-source-action"><a class="home-primary-link" href="{% url 'stats:mods_externos' %}">🧩 Explorar Mods reales ↗</a><span>Fuente: Modrinth · No modifica los registros del ABM</span></div>
       <ul class="clean-list">
         {% for mod in mods %}
         <li><strong>{{ mod.nombre }}</strong>{% if mod.autor %} — {{ mod.autor }}{% endif %} <span class="muted">({{ mod.descargas }} descargas registradas)</span></li>

@@ -17,3 +17,9 @@
 .insights-empty{background:#101a13;border:1px dashed #4a6846;border-radius:10px;padding:22px;line-height:1.6}
 .insights-chart-error{color:#ffc6ae}
 @media(max-width:760px){.insights-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.insights-canvas{height:280px}.insights-filtros label{flex:1 0 100%}}
+
+/* Navegación entre los tres módulos públicos de estadísticas. */
+.insights-related{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:18px 0 26px}
+.insights-related span{font-weight:700;color:#b8cdbb;margin-right:3px}
+.insights-related a{display:inline-flex;align-items:center;min-height:39px;padding:8px 12px;color:#d8f8d4;background:#101c13;border:1px solid #365438;border-radius:9px;text-decoration:none;font-weight:700}
+.insights-related a:hover,.insights-related a:focus-visible{border-color:#82d600;color:#b9ff51}

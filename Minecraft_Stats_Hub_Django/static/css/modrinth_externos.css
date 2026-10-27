@@ -1,0 +1,42 @@
+/* Fuente externa Modrinth — estilos independientes de los ABM */
+:root { color-scheme: dark; }
+body { background: #080d09; color:#f3f7ee; }
+.mr-container { max-width:1180px; margin:36px auto 76px; padding:0 20px; }
+.mr-hero,.mr-panel { background:linear-gradient(140deg,#121c16,#0a110d); border:1px solid #25472b; border-radius:17px; padding:28px; margin-bottom:19px; }
+.mr-kicker{font-size:11px;font-weight:800;letter-spacing:1.8px;color:#91e300;margin:0 0 9px}
+.mr-hero h1{font-size:clamp(26px,4vw,42px);margin:0 0 14px}
+.mr-hero p{color:#d0d9d0;line-height:1.65;max-width:830px}
+.mr-filters{display:grid;grid-template-columns:2fr 1fr 1fr 1fr auto;gap:12px;align-items:end;margin:14px 0 25px}
+.mr-filters label{display:flex;flex-direction:column;gap:8px;font-size:12px;font-weight:700}
+.mr-filters input,.mr-filters select{background:#070e09;color:#f5fff3;border:1px solid #33513a;border-radius:9px;padding:13px;width:100%;min-width:0}
+.mr-filters button,.mr-btn{background:#87da00;color:#091006;border:0;border-radius:9px;padding:13px 18px;font-weight:800;text-align:center;text-decoration:none;cursor:pointer}
+.mr-filters button:hover,.mr-btn:hover{background:#a7ed2e}
+.mr-results{display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.mr-results h2{margin:0 0 20px;font-size:24px}.mr-results p,.mr-note{color:#afc0b3;font-size:12px}
+.mr-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.mr-item{padding:18px;background:#101915;border:1px solid #294333;border-radius:13px;min-width:0}
+.mr-item-head{display:flex;align-items:center;gap:14px}
+.mr-item-head img{width:64px;height:64px;object-fit:cover;border-radius:12px;flex:none}
+.mr-item h3{font-size:21px;margin:0 0 5px}.mr-item-head span{color:#a8bca9;font-size:13px}
+.mr-item p{line-height:1.55;min-height:42px;color:#d0dacd}
+.mr-info{display:flex;gap:24px;flex-wrap:wrap;padding:10px 0 16px;border-top:1px solid #27402b}
+.mr-info div{display:flex;flex-direction:column;gap:5px;max-width:65%}
+.mr-info small{color:#a6b4a4}.mr-info strong{color:#a2e729;font-size:19px}
+.mr-actions{display:flex;align-items:center;gap:15px;flex-wrap:wrap}.mr-actions a{font-size:13px;color:#adf248}.mr-actions .mr-btn{color:#091006}
+.mr-pages{display:flex;justify-content:space-between;gap:15px;margin:24px 0}.mr-pages a,.mr-back{color:#a6ea34;font-weight:700}
+.mr-error{padding:17px;background:#38240d;border:1px solid #966522;border-radius:9px}
+.mr-error a{color:#ddf59e}.mr-note{line-height:1.65;margin:20px 0 0}
+.mr-short{grid-template-columns:2fr 1fr auto;max-width:740px}
+.mr-scroll{overflow:auto}.mr-scroll table{width:100%;border-collapse:collapse;min-width:710px;text-align:left}
+.mr-scroll td,.mr-scroll th{padding:13px 9px;border-bottom:1px solid #294333}.mr-scroll th{color:#96e12a;font-size:13px}
+.mr-scroll td small{display:block;color:#b2bfb1;font-size:11px;margin-top:5px}.mr-back{display:inline-block;margin-bottom:18px}
+@media(max-width:920px){.mr-filters{grid-template-columns:repeat(2,minmax(0,1fr))}.mr-filters button{grid-column:1/-1}.mr-grid{grid-template-columns:1fr}}
+@media(max-width:520px){.mr-container{padding:0 10px}.mr-panel,.mr-hero{padding:17px}.mr-filters,.mr-short{grid-template-columns:1fr}.mr-filters button{grid-column:auto}}
+
+/* Descargas oficiales Modrinth */
+.mr-scroll table{min-width:930px}
+.mr-download-cell{min-width:195px}
+.mr-download-cell .mr-btn.mr-download{display:inline-flex;align-items:center;justify-content:center;color:#091006;font-size:13px;white-space:nowrap;padding:10px 13px}
+.mr-download-cell small{display:block;max-width:220px;overflow-wrap:anywhere;color:#a6b4a4;margin-top:8px}
+.mr-version-source{color:#b4ee67}
+.mr-unavailable{font-size:12px;color:#ced9c9}

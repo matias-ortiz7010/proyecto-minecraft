@@ -1,0 +1,27 @@
+{% extends 'estadisticas/modrinth_base.html' %}
+{% block title %}Versiones de {{ slug }}{% endblock %}
+{% block content %}
+<a href="{% url 'stats:mods_externos' %}" class="mr-back">← Volver a buscar mods</a>
+{% if error %}<div class="mr-panel"><p class="mr-error" role="alert">{{ error }}</p></div>
+{% else %}<section class="mr-hero"><p class="mr-kicker">MODRINTH · VERSIONES</p>
+<div class="mr-item-head">{% if mod.icono %}<img src="{{ mod.icono }}" alt="" loading="lazy">{% endif %}<div><h1>{{ mod.nombre }}</h1><p>{{ mod.descripcion }}</p></div></div>
+<p>Descargas totales: <strong>{{ mod.descargas }}</strong> · <a href="{{ mod.url }}" target="_blank" rel="noopener noreferrer">Ver proyecto en Modrinth ↗</a></p></section>
+<section class="mr-panel"><h2>Versiones publicadas</h2>
+<form method="get" class="mr-filters mr-short">
+<label>Versión de Minecraft<input name="version" maxlength="20" placeholder="Ej.: 1.21.1" value="{{ version }}"></label>
+<label>Cargador<select name="loader"><option value="">Todos</option><option value="fabric" {% if loader == 'fabric' %}selected{% endif %}>Fabric</option><option value="forge" {% if loader == 'forge' %}selected{% endif %}>Forge</option><option value="neoforge" {% if loader == 'neoforge' %}selected{% endif %}>NeoForge</option><option value="quilt" {% if loader == 'quilt' %}selected{% endif %}>Quilt</option></select></label><button type="submit">Aplicar filtros</button></form>
+<div class="mr-scroll"><table><thead><tr><th>Versión del mod</th><th>Tipo</th><th>Minecraft</th><th>Loader</th><th>Publicada</th><th>Descargas</th><th>Archivo oficial</th></tr></thead>
+<tbody>{% for v in versiones %}<tr><td><strong>{{ v.numero }}</strong><small>{{ v.nombre }}</small></td><td>{{ v.tipo }}</td><td>{{ v.mc }}</td><td>{{ v.loaders }}</td><td>{{ v.fecha }}</td><td>{{ v.descargas }}</td>
+<td class="mr-download-cell">
+  {% if v.archivo %}
+    <a class="mr-btn mr-download" href="{{ v.archivo.url }}" target="_blank" rel="noopener noreferrer" aria-label="Descargar {{ mod.nombre }} versión {{ v.numero }} desde Modrinth">⬇ Descargar archivo</a>
+    <small title="Nombre del archivo">{{ v.archivo.nombre }}</small>
+    <small><a class="mr-version-source" href="{{ v.pagina_version }}" target="_blank" rel="noopener noreferrer">Ver versión en Modrinth ↗</a></small>
+  {% else %}
+    <span class="mr-unavailable">Archivo directo no disponible</span>
+    <small><a class="mr-version-source" href="{{ v.pagina_version }}" target="_blank" rel="noopener noreferrer">Consultar en Modrinth ↗</a></small>
+  {% endif %}
+</td></tr>
+{% empty %}<tr><td colspan="7">No hay versiones que coincidan con los filtros.</td></tr>{% endfor %}</tbody></table></div>
+<p class="mr-note">Las descargas abren el archivo original de Modrinth (CDN oficial); Minecraft Stats Hub no lo almacena ni lo ejecuta. Comprobá que la versión de Minecraft, el cargador y las dependencias sean compatibles. Se muestran hasta 20 versiones recientes y no se modifica tu base de datos.</p></section>
+{% endif %}{% endblock %}

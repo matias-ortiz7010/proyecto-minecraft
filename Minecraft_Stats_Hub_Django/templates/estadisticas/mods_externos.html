@@ -1,0 +1,26 @@
+{% extends 'estadisticas/modrinth_base.html' %}
+{% block title %}Catálogo real de mods{% endblock %}
+{% block content %}
+<section class="mr-hero"><p class="mr-kicker">MINECRAFT STATS HUB · DATOS EXTERNOS</p>
+<h1>Mods publicados en Modrinth</h1>
+<p>Buscá proyectos y consultá autores, descargas y compatibilidad directamente desde Modrinth. Esta página <strong>no modifica</strong> tus mods registrados en Django.</p></section>
+<section class="mr-panel">
+<form method="get" action="{% url 'stats:mods_externos' %}" class="mr-filters">
+<label>Buscar mod<input name="q" maxlength="65" value="{{ consulta }}" placeholder="Sodium, Iris, Create..."></label>
+<label>Versión Minecraft<input name="version" maxlength="20" value="{{ version }}" placeholder="Ej.: 1.21.1"></label>
+<label>Cargador<select name="loader"><option value="">Todos</option><option value="fabric" {% if loader == 'fabric' %}selected{% endif %}>Fabric</option><option value="forge" {% if loader == 'forge' %}selected{% endif %}>Forge</option><option value="neoforge" {% if loader == 'neoforge' %}selected{% endif %}>NeoForge</option><option value="quilt" {% if loader == 'quilt' %}selected{% endif %}>Quilt</option></select></label>
+<label>Ordenar por<select name="orden"><option value="downloads" {% if orden == 'downloads' %}selected{% endif %}>Más descargas</option><option value="relevance" {% if orden == 'relevance' %}selected{% endif %}>Relevancia</option><option value="updated" {% if orden == 'updated' %}selected{% endif %}>Actualizados</option><option value="newest" {% if orden == 'newest' %}selected{% endif %}>Nuevos</option></select></label>
+<button type="submit">Buscar mods</button></form>
+{% if error %}<p class="mr-error" role="alert">{{ error }} <a href="https://modrinth.com/mods" target="_blank" rel="noopener noreferrer">Abrir Modrinth</a></p>
+{% else %}<div class="mr-results"><h2>Resultados</h2><p>{{ total }} proyectos encontrados · Página {{ pagina }}</p></div>
+<div class="mr-grid">{% for mod in mods %}
+<article class="mr-item"><div class="mr-item-head">{% if mod.icono %}<img src="{{ mod.icono }}" alt="" loading="lazy">{% endif %}
+<div><h3>{{ mod.nombre }}</h3><span>Por {{ mod.autor }}</span></div></div>
+<p>{{ mod.descripcion }}</p>
+<div class="mr-info"><div><small>Descargas</small><strong>{{ mod.descargas }}</strong></div><div><small>Versiones de Minecraft</small><span>{{ mod.versiones_mc }}</span></div></div>
+<div class="mr-actions"><a class="mr-btn" href="{% url 'stats:mod_externo_detalle' slug=mod.slug %}">Ver versiones</a><a href="{{ mod.url }}" target="_blank" rel="noopener noreferrer">Ver en Modrinth ↗</a></div></article>
+{% empty %}<p>No hay mods para los filtros seleccionados.</p>{% endfor %}</div>
+<div class="mr-pages">{% if anterior %}<a href="?{{ anterior }}">← Anterior</a>{% endif %}
+{% if siguiente %}<a href="?{{ siguiente }}">Siguiente →</a>{% endif %}</div>
+{% endif %}<p class="mr-note">Consulta pública en caché hasta cinco minutos. Descargas y compatibilidades corresponden a la API externa y pueden cambiar. No se almacenan en SQLite.</p>
+</section>{% endblock %}
