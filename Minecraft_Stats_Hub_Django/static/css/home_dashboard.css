@@ -87,3 +87,17 @@ body { background: radial-gradient(ellipse 70% 35% at 50% 12%, #152116 0%, #070a
 @media(max-width:800px){.home-stats-links{grid-template-columns:1fr}}
 @media(max-width:660px){.home-stats-hub{width:calc(100% - 24px);padding:22px 18px}}
 @media(prefers-reduced-motion:reduce){.home-stats-link{transition:none}}
+
+/* Tarjeta adicional de perfiles Java en el centro de estadísticas. */
+@media (min-width: 1050px) {
+  .home-stats-links { grid-template-columns: repeat(4, minmax(0,1fr)); }
+}
+@media (min-width: 801px) and (max-width: 1049px) {
+  .home-stats-links { grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+
+/* MSH PVPH NAV CARD V1 */
+/* Con cinco accesos, distribuimos las tarjetas en 3 + 2 en pantallas anchas. */
+@media (min-width: 1050px) {
+  .home-stats-hub .home-stats-links { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}

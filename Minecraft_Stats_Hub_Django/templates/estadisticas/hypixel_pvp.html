@@ -1,0 +1,24 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PvP en Hypixel · Minecraft Stats Hub</title>
+<link rel="stylesheet" href="{% static 'css/hypixel_pvp.css' %}"></head>
+<body>
+<header class="header"><a href="{% url 'stats:index' %}">◀ Minecraft Stats Hub</a><span>Estadísticas externas · Hypixel</span></header>
+<main>
+<div class="intro"><p class="eyebrow">CONSULTA EXTERNA · SOLO LECTURA</p><h1>PvP de jugadores en Hypixel</h1>
+<p>Consultá las estadísticas públicas de Bed Wars, SkyWars y Duels de un jugador. Los datos corresponden a Hypixel, no al PvP global de Minecraft.</p>
+<p>Se consulta al buscar y se almacena temporalmente en caché. No es seguimiento continuo ni se modifica el ABM de Jugadores.</p></div>
+<section class="panel">
+<form method="get"><label for="nombre">Nombre de Minecraft Java</label><div class="search"><input id="nombre" name="nombre" value="{{ nombre }}" placeholder="Ej.: Dream" autocomplete="off" maxlength="16"><button type="submit">Buscar estadísticas</button></div></form>
+{% if mensaje %}<p role="status" class="notice">{{ mensaje }}</p>{% endif %}
+{% if perfil and datos %}
+<h2>{{ perfil.nombre }}</h2><p class="muted">UUID: <code>{{ perfil.uuid_formato }}</code></p>
+<div class="cards">{% for modo in datos %}<article class="card"><h3>{{ modo.nombre }}</h3>
+{% if modo.disponible %}<dl>{% for campo in modo.campos %}<div><dt>{{ campo.nombre }}</dt><dd>{% if campo.valor is not None %}{{ campo.valor }}{% else %}—{% endif %}</dd></div>{% endfor %}</dl>
+{% else %}<p>Sin estadísticas públicas para este modo.</p>{% endif %}</article>{% endfor %}</div>
+{% endif %}
+</section>
+<footer><p>Fuente: API oficial de Hypixel. Este sitio no está afiliado ni respaldado por Hypixel.</p><a href="{% url 'stats:perfiles_minecraft' %}">Perfiles públicos de Minecraft</a></footer>
+</main></body></html>

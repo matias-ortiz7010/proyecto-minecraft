@@ -31,7 +31,8 @@
       {% else %}
       <a href="{% url 'stats:gestion_login' %}">Administración</a>
       {% endif %}
-    </nav>
+          <a href="{% url 'stats:hypixel_pvp' %}">PvP Hypixel</a>
+</nav>
   </header>
 
   <main>
@@ -59,6 +60,14 @@
         <p>Accedé a los gráficos de servidores o consultá speedruns y mods publicados en fuentes externas.</p>
       </div>
       <div class="home-stats-links">
+        <!-- MSH_PVP_LOCAL_HUB -->
+        <a class="home-stats-link" href="{% url 'stats:estadisticas_pvp_local' %}">
+          <span class="home-stats-icon" aria-hidden="true">⚔️</span>
+          <strong>PvP registrado</strong>
+          <small>Ranking y gráficos de tus datos de Django</small>
+          <span class="home-stats-cta">Analizar PvP ↗</span>
+        </a>
+
         <a class="home-stats-link" href="{% url 'stats:estadisticas_servidores' %}">
           <span class="home-stats-icon" aria-hidden="true">🌐</span>
           <strong>Servidores</strong>
@@ -67,21 +76,27 @@
         </a>
         <a class="home-stats-link" href="{% url 'stats:speedruns_externos' %}">
           <span class="home-stats-icon" aria-hidden="true">🏆</span>
-          <strong>Speedruns reales</strong>
+          <strong>Speedruns</strong>
           <small>Clasificaciones y filtros de speedrun.com</small>
           <span class="home-stats-cta">Ver speedruns ↗</span>
         </a>
         <a class="home-stats-link" href="{% url 'stats:mods_externos' %}">
           <span class="home-stats-icon" aria-hidden="true">🧩</span>
-          <strong>Mods reales</strong>
+          <strong>Mods</strong>
           <small>Buscar mods, descargas y versiones en Modrinth</small>
           <span class="home-stats-cta">Explorar mods ↗</span>
         </a>
         <a class="home-stats-link" href="{% url 'stats:perfiles_minecraft' %}">
           <span class="home-stats-icon" aria-hidden="true">👤</span>
-          <strong>Jugadores reales</strong>
+          <strong>Jugadores</strong>
           <small>Nombre, UUID y skin pública de Minecraft Java</small>
           <span class="home-stats-cta">Buscar jugador ↗</span>
+        </a>
+        <a class="home-stats-link" href="{% url 'stats:hypixel_pvp' %}">
+          <span class="home-stats-icon" aria-hidden="true">⚔️</span>
+          <strong>PvP Hypixel</strong>
+          <small>Consultá Bed Wars, SkyWars y Duels por jugador (requiere API key)</small>
+          <span class="home-stats-cta">Ver estadísticas PvP ↗</span>
         </a>
       </div>
     </section>
@@ -185,6 +200,12 @@
       {% else %}
       <p>Todavía no hay estadísticas PvP cargadas.</p>
       {% endif %}
+          <div class="home-source-action">
+        <a class="home-primary-link" href="{% url 'stats:hypixel_pvp' %}">⚔️ Consultar PvP real en Hypixel ↗</a>
+        <span>Datos externos · No modifica el ABM · Requiere clave de API</span>
+      </div>
+      <!-- MSH_PVP_LOCAL_LINK -->
+      <p class="data-note"><a class="inline-link" href="{% url 'stats:estadisticas_pvp_local' %}">⚔️ Ver ranking y gráficos PvP registrados →</a></p>
     </section>
 
     <section id="mods" class="panel">

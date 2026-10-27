@@ -10,7 +10,13 @@ from .perfiles_minecraft import perfiles_minecraft
 
 app_name = "stats"
 
+from .hypixel_pvp import estadisticas_pvp_hypixel
+
+from .pvp_local import estadisticas_pvp_local
+
 urlpatterns = [
+    path("estadisticas/pvp/local/", estadisticas_pvp_local, name="estadisticas_pvp_local"),
+    path("estadisticas/pvp/hypixel/", estadisticas_pvp_hypixel, name="hypixel_pvp"),
     path("gestion/ingresar/", LoginView.as_view(
         template_name="gestion/login.html",
         authentication_form=StaffLoginForm,

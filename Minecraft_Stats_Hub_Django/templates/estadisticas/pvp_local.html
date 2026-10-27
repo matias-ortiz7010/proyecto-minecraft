@@ -1,0 +1,86 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>PvP registrado · Minecraft Stats Hub</title>
+  <link rel="stylesheet" href="{% static 'css/pvp_local.css' %}">
+  <script defer src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script defer src="{% static 'js/pvp_local.js' %}"></script>
+</head>
+<body>
+  <header class="sitebar">
+    <a class="logo" href="{% url 'stats:index' %}">◈ Minecraft Stats Hub</a>
+    <nav aria-label="Navegación de PvP">
+      <a href="{% url 'stats:index' %}#estadisticas">Estadísticas</a>
+      <a href="{% url 'stats:index' %}#pvp">PvP en inicio</a>
+      <a href="/estadisticas/pvp/hypixel/">PvP Hypixel</a>
+    </nav>
+  </header>
+  <main>
+    <section class="intro">
+      <p class="eyebrow">ANÁLISIS DE DATOS GUARDADOS EN DJANGO</p>
+      <h1>Estadísticas PvP registradas</h1>
+      <p>Compará jugadores por victorias, kills y porcentaje de victorias. Estos números provienen de tu <strong>base de datos local</strong>, no de la API de Hypixel ni de rankings oficiales.</p>
+    </section>
+
+    <form class="filters" method="get" aria-label="Filtros del ranking">
+      <label>Ordenar por
+        <select name="orden">
+          <option value="victorias" {% if orden == 'victorias' %}selected{% endif %}>Más victorias</option>
+          <option value="kills" {% if orden == 'kills' %}selected{% endif %}>Más kills</option>
+          <option value="winrate" {% if orden == 'winrate' %}selected{% endif %}>Mejor % de victorias</option>
+        </select>
+      </label>
+      <label>Mínimo de partidas
+        <select name="min">
+          <option value="0" {% if minimo == 0 %}selected{% endif %}>Sin mínimo</option>
+          <option value="5" {% if minimo == 5 %}selected{% endif %}>5 partidas</option>
+          <option value="10" {% if minimo == 10 %}selected{% endif %}>10 partidas</option>
+          <option value="25" {% if minimo == 25 %}selected{% endif %}>25 partidas</option>
+          <option value="50" {% if minimo == 50 %}selected{% endif %}>50 partidas</option>
+        </select>
+      </label>
+      <button type="submit">Aplicar filtros</button>
+    </form>
+
+    <section class="metrics" aria-label="Resumen de registros filtrados">
+      <article><span>Jugadores con estadísticas</span><strong>{{ totales.jugadores }}</strong></article>
+      <article><span>Victorias registradas</span><strong>{{ totales.victorias }}</strong></article>
+      <article><span>Kills registradas</span><strong>{{ totales.kills }}</strong></article>
+      <article><span>% de victorias combinado</span><strong>{{ totales.winrate }}%</strong></article>
+    </section>
+
+    <section class="panel">
+      <div class="sectionheading">
+        <h2>Ranking PvP</h2>
+        <span class="subtext">Comparación entre registros de tu proyecto</span>
+      </div>
+      {% if filas %}
+      <div class="scrolltable">
+        <table>
+          <thead><tr><th>#</th><th>Jugador</th><th>Victorias</th><th>Derrotas</th><th>Partidas</th><th>Kills</th><th>Racha</th><th>Winrate</th></tr></thead>
+          <tbody>
+          {% for jugador in filas %}
+          <tr><td>{{ forloop.counter }}</td><td class="name">{{ jugador.jugador }}</td><td>{{ jugador.victorias }}</td><td>{{ jugador.derrotas }}</td><td>{{ jugador.partidas }}</td><td>{{ jugador.kills }}</td><td>{{ jugador.racha }}</td><td class="accent">{{ jugador.winrate }}%</td></tr>
+          {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% if truncado %}<p class="note">Mostrando los primeros 30 jugadores del ranking.</p>{% endif %}
+      {% else %}
+      <p class="empty">Todavía no hay registros PvP que cumplan estos filtros. Podés ajustar el mínimo de partidas o cargar información desde Django Admin.</p>
+      {% endif %}
+    </section>
+
+    <section class="panel" aria-label="Comparación gráfica">
+      <h2>Victorias y derrotas por jugador</h2>
+      <p class="note">Hasta diez jugadores del ranking seleccionado. El gráfico utiliza los valores registrados manualmente.</p>
+      {% if filas %}<div class="chartBox"><canvas id="pvp-chart" aria-label="Gráfico de victorias y derrotas" role="img"></canvas></div>{% else %}<p class="empty">Cargá estadísticas para generar el gráfico.</p>{% endif %}
+      {{ grafico|json_script:"pvp-local-datos" }}
+    </section>
+    <p class="disclaimer">Aviso: el winrate combinado se calcula con las victorias y derrotas de los registros filtrados. No representa el PvP global de Minecraft. La consulta oficial de Hypixel requiere una clave autorizada.</p>
+  </main>
+</body>
+</html>
