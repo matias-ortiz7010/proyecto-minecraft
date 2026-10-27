@@ -1,0 +1,35 @@
+/* Consulta de perfiles reales Java, complementaria al ABM y estilos del sitio. */
+.mc-player-container{width:min(1100px,calc(100% - 28px));margin:34px auto 70px;color:#f5fff0}
+.mc-player-intro,.mc-player-profile,.mc-player-footnote{border:1px solid #314a32;border-radius:15px;background:linear-gradient(130deg,#142018,#0a110c);padding:clamp(18px,3.5vw,34px);margin-bottom:18px}
+.mc-kicker{font-size:.72rem;font-weight:800;letter-spacing:.14em;color:#8be300;margin:0 0 10px}
+.mc-player-intro h1{font-size:clamp(1.7rem,4vw,2.4rem);margin:0 0 12px}
+.mc-player-intro p:not(.mc-kicker),.mc-player-footnote p{max-width:800px;color:#c9dbc9;line-height:1.6}
+.mc-player-search{max-width:770px;margin-top:24px}.mc-player-search label{display:block;margin:0 0 7px;font-weight:700}
+.mc-player-search-row{display:flex;gap:10px}
+.mc-player-search-row input{flex:1;min-width:0;border-radius:9px;border:1px solid #35503b;color:#f9fff7;background:#070e0a;padding:13px 15px;font:inherit}
+.mc-player-search-row input:focus-visible{outline:2px solid #8be300;outline-offset:2px}
+.mc-player-search-row button{background:#82d600;color:#0a1104;border:0;border-radius:9px;padding:12px 20px;font:inherit;font-weight:800;cursor:pointer}
+.mc-player-search-row button:hover{background:#a1ed39}
+.mc-player-alert{border:1px solid #8a692f;background:#322510;color:#fce5b4;padding:14px 18px;border-radius:9px;margin:14px 0}
+.mc-player-profile{display:grid;grid-template-columns:minmax(170px,240px) minmax(0,1fr);gap:30px;align-items:center}
+.mc-player-portrait{background:radial-gradient(circle at 50% 35%,#2b5222,#071109 73%);border-radius:13px;min-height:320px;display:flex;align-items:center;justify-content:center}
+.mc-player-portrait img{max-width:100%;object-fit:contain;image-rendering:pixelated}
+.mc-player-heading{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+.mc-player-heading img{width:64px;height:64px;image-rendering:pixelated;border:1px solid #5a764f;border-radius:8px;background:#182219}
+.mc-player-heading h2{font-size:clamp(1.5rem,3vw,2.2rem);margin:0;overflow-wrap:anywhere}
+.mc-player-info dl{display:grid;gap:11px}.mc-player-info dl>div{border-bottom:1px solid #2c402d;padding-bottom:11px}
+.mc-player-info dt{color:#b0c6b2;font-size:.8rem}.mc-player-info dd{margin:5px 0 0;font-weight:700}
+.mc-uuid{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:clamp(.82rem,1.7vw,1rem);word-break:break-all}
+.mc-player-links{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px}
+.mc-player-links a,.mc-player-footnote a{color:#9aee37;font-weight:700}
+.mc-player-footnote h2{font-size:1.15rem;margin-top:0}
+@media(max-width:620px){.mc-player-search-row{flex-direction:column}.mc-player-profile{grid-template-columns:1fr}.mc-player-portrait{min-height:245px}}
+/* Visor de skin auténtica: pixel art frontal, sin skins predeterminadas inventadas. */
+.mc-skin-preview{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;width:100%;padding:14px}
+.mc-skin-body{image-rendering:pixelated;width:min(176px,100%);height:auto;aspect-ratio:1/2;object-fit:contain}
+.mc-skin-face{image-rendering:pixelated;width:64px;height:64px;border:1px solid #5a764f;border-radius:8px;background:#182219;flex-shrink:0}
+.mc-skin-status{text-align:center;font-size:.83rem;color:#bdd5b5;line-height:1.5;max-width:210px}
+.mc-skin-raw{font-size:.78rem;color:#a2ed43;text-align:center}
+.mc-skin-unavailable{text-align:center;color:#bed2b5;padding:18px;max-width:240px}
+.mc-skin-unavailable span{display:block;font-size:3.5rem;color:#8be300;line-height:1.1}
+.mc-skin-unavailable p{font-size:.9rem;line-height:1.5}

@@ -67,15 +67,21 @@
         </a>
         <a class="home-stats-link" href="{% url 'stats:speedruns_externos' %}">
           <span class="home-stats-icon" aria-hidden="true">🏆</span>
-          <strong>Speedruns</strong>
+          <strong>Speedruns reales</strong>
           <small>Clasificaciones y filtros de speedrun.com</small>
           <span class="home-stats-cta">Ver speedruns ↗</span>
         </a>
         <a class="home-stats-link" href="{% url 'stats:mods_externos' %}">
           <span class="home-stats-icon" aria-hidden="true">🧩</span>
-          <strong>Mods</strong>
+          <strong>Mods reales</strong>
           <small>Buscar mods, descargas y versiones en Modrinth</small>
           <span class="home-stats-cta">Explorar mods ↗</span>
+        </a>
+        <a class="home-stats-link" href="{% url 'stats:perfiles_minecraft' %}">
+          <span class="home-stats-icon" aria-hidden="true">👤</span>
+          <strong>Jugadores reales</strong>
+          <small>Nombre, UUID y skin pública de Minecraft Java</small>
+          <span class="home-stats-cta">Buscar jugador ↗</span>
         </a>
       </div>
     </section>
@@ -133,7 +139,8 @@
         <button id="search-button" type="button">Buscar</button>
       </div>
       <div id="resultado" class="result" aria-live="polite"></div>
-      <p class="data-note">Buscá jugadores registrados en tu base de datos. Las estadísticas externas del perfil no se consultan automáticamente.</p>
+      <p class="data-note">Este buscador usa tus registros de Django, no estadísticas oficiales.</p>
+      <div class="home-source-action"><a class="home-primary-link" href="{% url 'stats:perfiles_minecraft' %}">👤 Buscar perfil real de Minecraft ↗</a><span>Fuente: servicios públicos de Minecraft Java · No modifica el ABM</span></div>
 {% if user.is_staff %}
       <p class="data-note"><a class="inline-link" href="{% url 'stats:jugadores_gestion' %}">Administrar jugadores (ABM) →</a></p>
       {% endif %}

@@ -6,6 +6,7 @@ from . import views
 from .analitica_servidores import estadisticas_servidores
 from .speedruns_externos import speedruns_externos
 from .modrinth_externos import mods_externos, mod_externo_detalle
+from .perfiles_minecraft import perfiles_minecraft
 
 app_name = "stats"
 
@@ -52,6 +53,9 @@ urlpatterns = [
     # Catálogo externo de mods: solo lectura, sin SQLite
     path("estadisticas/mods/", mods_externos, name="mods_externos"),
     path("estadisticas/mods/<slug:slug>/", mod_externo_detalle, name="mod_externo_detalle"),
+
+    # Perfiles públicos Java Edition, sólo lectura
+    path("estadisticas/jugadores/", perfiles_minecraft, name="perfiles_minecraft"),
 
     # API JSON usada por la página pública
     path("api/jugadores/buscar/", views.api_buscar_jugador, name="api_buscar_jugador"),

@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Perfiles reales de Minecraft · Minecraft Stats Hub</title>
+  <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+  <link rel="stylesheet" href="{% static 'css/perfiles_minecraft.css' %}">
+  <script src="{% static 'js/skin_minecraft.js' %}" defer></script>
+</head>
+<body>
+<header>
+  <a class="brand" href="{% url 'stats:index' %}#inicio"><img class="site-logo" src="{% static 'assets/logo.png' %}" alt="Minecraft Stats Hub"><span>Minecraft Stats Hub</span></a>
+  <nav>
+    <a href="{% url 'stats:index' %}#estadisticas">Estadísticas</a>
+    <a href="{% url 'stats:index' %}#jugadores">Jugadores locales</a>
+    <a href="{% url 'stats:speedruns_externos' %}">Speedruns</a>
+    <a href="{% url 'stats:mods_externos' %}">Mods</a>
+  </nav>
+</header>
+<main class="mc-player-container">
+  <section class="mc-player-intro">
+    <p class="mc-kicker">FUENTE EXTERNA · MINECRAFT JAVA EDITION</p>
+    <h1>Perfiles reales de Minecraft</h1>
+    <p>Buscá una cuenta pública de Java Edition por nombre para consultar su nombre oficial, UUID y skin. Los resultados <strong>no son estadísticas PvP</strong> y no se guardan en el ABM.</p>
+    <form class="mc-player-search" action="{% url 'stats:perfiles_minecraft' %}" method="get" role="search">
+      <label for="nombre">Nombre de Minecraft</label>
+      <div class="mc-player-search-row">
+        <input type="text" id="nombre" name="nombre" value="{{ nombre_buscado }}" placeholder="Ej.: Dream, jeb_" maxlength="16" pattern="[A-Za-z0-9_]{1,16}" autocomplete="off" required>
+        <button type="submit">Buscar jugador</button>
+      </div>
+    </form>
+  </section>
+  {% if mensaje %}<div class="mc-player-alert" role="status">{{ mensaje }}</div>{% endif %}
+  {% if perfil %}
+  <section class="mc-player-profile" aria-labelledby="perfil-heading">
+    <div class="mc-player-portrait">
+      {% if perfil.skin_hash %}
+        <div class="mc-skin-preview" data-skin-url="{% url 'stats:perfiles_minecraft' %}?skin={{ perfil.skin_hash }}" data-skin-model="{{ perfil.modelo }}">
+          <canvas class="mc-skin-body" width="16" height="32" role="img" aria-label="Vista frontal de la skin oficial de {{ perfil.nombre }}" hidden></canvas>
+          <p class="mc-skin-status" role="status">Cargando skin desde Mojang…</p>
+          <a class="mc-skin-raw" href="{{ perfil.skin_url }}" target="_blank" rel="noopener noreferrer">Ver textura PNG original ↗</a>
+        </div>
+      {% elif perfil.estado_skin == 'predeterminada' %}
+        <div class="mc-skin-unavailable"><span aria-hidden="true">◻</span><p>Esta cuenta usa una skin predeterminada o no tiene textura personalizada publicada.</p></div>
+      {% else %}
+        <div class="mc-skin-unavailable"><span aria-hidden="true">?</span><p>No se pudo verificar la skin. Podés volver a buscar dentro de un rato.</p></div>
+      {% endif %}
+    </div>
+    <div class="mc-player-info">
+      <p class="mc-kicker">DATOS PÚBLICOS DE LA CUENTA</p>
+      <div class="mc-player-heading">
+        {% if perfil.skin_hash %}
+          <canvas width="8" height="8" class="mc-skin-face" role="img" aria-label="Cara de {{ perfil.nombre }}" hidden></canvas>
+        {% endif %}
+        <h2 id="perfil-heading">{{ perfil.nombre }}</h2>
+      </div>
+      <dl>
+        <div><dt>Nombre actual</dt><dd>{{ perfil.nombre }}</dd></div>
+        <div><dt>UUID</dt><dd class="mc-uuid">{{ perfil.uuid_formato }}</dd></div>
+        <div><dt>Modelo de skin</dt><dd>{{ perfil.modelo }}</dd></div>
+      </dl>
+      <div class="mc-player-links">
+        {% if perfil.skin_url %}<a href="{{ perfil.skin_url }}" target="_blank" rel="noopener noreferrer">Ver textura de skin ↗</a>{% endif %}
+        {% if perfil.cape_url %}<a href="{{ perfil.cape_url }}" target="_blank" rel="noopener noreferrer">Ver capa ↗</a>{% endif %}
+      </div>
+    </div>
+  </section>
+  {% endif %}
+  <section class="mc-player-footnote">
+    <h2>¿Por qué antes aparecía Alex?</h2>
+    <p>Los renders de servicios externos pueden mostrar una skin predeterminada si no consiguen obtener la textura de un jugador. Ahora armamos la vista frontal a partir de su <strong>PNG publicado por Mojang</strong>. Si la consulta falla, lo indicamos en lugar de presentar una skin distinta como verdadera.</p>
+    <p>El modelo de brazos puede ser clásico o slim. El visor muestra la parte frontal en 2D, no un render 3D. Para ver el PNG exacto, usá «Ver textura de skin».</p>
+    <p>No consulta Bedrock ni victorias, derrotas, kills o rangos PvP globales. <a href="{% url 'stats:index' %}#jugadores">← Volver al buscador local de Django</a></p>
+  </section>
+</main>
+</body>
+</html>
