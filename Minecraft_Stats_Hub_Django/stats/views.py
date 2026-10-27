@@ -1,9 +1,10 @@
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from django.db.models import Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
-from .forms import JugadorForm, ModForm, ServidorForm
+from .forms import JugadorForm, ModForm, ServidorForm, SpeedrunForm
 from .models import Jugador, Mod, PvP, Servidor, Speedrun
 
 
@@ -149,6 +150,7 @@ def api_mods(request):
 # ABM de jugadores
 # -----------------------------
 
+@staff_member_required(login_url="stats:gestion_login")
 def jugadores_gestion(request):
     """Listado/consulta del ABM de jugadores."""
     query = request.GET.get("q", "").strip()
@@ -167,6 +169,7 @@ def jugadores_gestion(request):
     )
 
 
+@staff_member_required(login_url="stats:gestion_login")
 def jugador_crear(request):
     """Alta de un jugador."""
     form = JugadorForm(request.POST or None)
@@ -182,6 +185,7 @@ def jugador_crear(request):
     )
 
 
+@staff_member_required(login_url="stats:gestion_login")
 def jugador_editar(request, pk):
     """Modificación de un jugador existente."""
     jugador = get_object_or_404(Jugador, pk=pk)
@@ -203,6 +207,7 @@ def jugador_editar(request, pk):
     )
 
 
+@staff_member_required(login_url="stats:gestion_login")
 def jugador_eliminar(request, pk):
     """Baja de un jugador. La eliminación final solo se ejecuta por POST."""
     jugador = get_object_or_404(Jugador, pk=pk)
@@ -223,6 +228,7 @@ def jugador_eliminar(request, pk):
 # ABM de servidores
 # -----------------------------
 
+@staff_member_required(login_url="stats:gestion_login")
 def servidores_gestion(request):
     """Consulta/listado y búsqueda por nombre, IP/dominio o país."""
     query = request.GET.get("q", "").strip()
@@ -240,6 +246,7 @@ def servidores_gestion(request):
     )
 
 
+@staff_member_required(login_url="stats:gestion_login")
 def servidor_crear(request):
     """Alta de servidor en la base de datos."""
     form = ServidorForm(request.POST or None)
@@ -254,6 +261,7 @@ def servidor_crear(request):
     )
 
 
+@staff_member_required(login_url="stats:gestion_login")
 def servidor_editar(request, pk):
     """Modificación de un servidor existente."""
     servidor = get_object_or_404(Servidor, pk=pk)
@@ -272,6 +280,7 @@ def servidor_editar(request, pk):
     )
 
 
+@staff_member_required(login_url="stats:gestion_login")
 def servidor_eliminar(request, pk):
     """Baja de servidor; solo permite eliminar con confirmación por POST."""
     servidor = get_object_or_404(Servidor, pk=pk)
@@ -290,6 +299,7 @@ def servidor_eliminar(request, pk):
 # ABM de mods
 # -----------------------------
 
+@staff_member_required(login_url="stats:gestion_login")
 def mods_gestion(request):
     """Listado y búsqueda por nombre, autor y versión."""
     query = request.GET.get("q", "").strip()
@@ -303,6 +313,7 @@ def mods_gestion(request):
     return render(request, "gestion/mods/lista.html", {"mods": mods, "query": query})
 
 
+@staff_member_required(login_url="stats:gestion_login")
 def mod_crear(request):
     """Alta de un mod con validación mediante ModelForm."""
     form = ModForm(request.POST or None)
@@ -316,6 +327,7 @@ def mod_crear(request):
     )
 
 
+@staff_member_required(login_url="stats:gestion_login")
 def mod_editar(request, pk):
     """Modificación de un mod existente."""
     mod = get_object_or_404(Mod, pk=pk)
@@ -330,6 +342,7 @@ def mod_editar(request, pk):
     )
 
 
+@staff_member_required(login_url="stats:gestion_login")
 def mod_eliminar(request, pk):
     """Baja: GET presenta confirmación; POST elimina el registro."""
     mod = get_object_or_404(Mod, pk=pk)
@@ -339,3 +352,62 @@ def mod_eliminar(request, pk):
         messages.success(request, f"Mod {nombre} eliminado correctamente.")
         return redirect("stats:mods_gestion")
     return render(request, "gestion/mods/confirmar_eliminar.html", {"mod": mod})
+
+
+# -----------------------------
+# ABM de speedruns
+# -----------------------------
+
+@staff_member_required(login_url="stats:gestion_login")
+def speedruns_gestion(request):
+    """Listado ordenado por tiempo y búsqueda por jugador, categoría o versión."""
+    query = request.GET.get("q", "").strip()
+    speedruns = Speedrun.objects.select_related("jugador").all()
+    if query:
+        speedruns = speedruns.filter(
+            Q(jugador__nombre__icontains=query)
+            | Q(categoria__icontains=query)
+            | Q(version__icontains=query)
+        )
+    return render(request, "gestion/speedruns/lista.html", {"speedruns": speedruns, "query": query})
+
+
+@staff_member_required(login_url="stats:gestion_login")
+def speedrun_crear(request):
+    """Alta de speedrun asociada a un jugador existente."""
+    form = SpeedrunForm(request.POST or None)
+    if request.method == "POST" and form.is_valid():
+        record = form.save()
+        messages.success(request, f"Speedrun de {record.jugador.nombre} agregada correctamente.")
+        return redirect("stats:speedruns_gestion")
+    return render(
+        request, "gestion/speedruns/form.html",
+        {"form": form, "titulo": "Agregar speedrun", "accion": "Crear speedrun"},
+    )
+
+
+@staff_member_required(login_url="stats:gestion_login")
+def speedrun_editar(request, pk):
+    """Modificación de speedrun con validación de duración."""
+    record = get_object_or_404(Speedrun, pk=pk)
+    form = SpeedrunForm(request.POST or None, instance=record)
+    if request.method == "POST" and form.is_valid():
+        record = form.save()
+        messages.success(request, f"Speedrun de {record.jugador.nombre} actualizada correctamente.")
+        return redirect("stats:speedruns_gestion")
+    return render(
+        request, "gestion/speedruns/form.html",
+        {"form": form, "titulo": "Editar speedrun", "accion": "Guardar cambios", "record": record},
+    )
+
+
+@staff_member_required(login_url="stats:gestion_login")
+def speedrun_eliminar(request, pk):
+    """Baja confirmada mediante POST (nunca borra desde un enlace GET)."""
+    record = get_object_or_404(Speedrun.objects.select_related("jugador"), pk=pk)
+    if request.method == "POST":
+        nombre = record.jugador.nombre
+        record.delete()
+        messages.success(request, f"Speedrun de {nombre} eliminada correctamente.")
+        return redirect("stats:speedruns_gestion")
+    return render(request, "gestion/speedruns/confirmar_eliminar.html", {"record": record})

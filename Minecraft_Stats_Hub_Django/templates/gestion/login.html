@@ -1,0 +1,29 @@
+{% extends "gestion/base_gestion.html" %}
+{% block title %}Acceso al ABM{% endblock %}
+{% block content %}
+<section class="panel login-panel">
+  <p class="eyebrow">ACCESO PROTEGIDO</p>
+  <h1>Administración</h1>
+  <p class="muted">Iniciá sesión con una cuenta de Django autorizada para gestionar jugadores, servidores, mods y speedruns.</p>
+  {% if user.is_authenticated and not user.is_staff %}
+  <div class="login-warning" role="alert">Tu cuenta actual no tiene permiso de administrador. Ingresá con una cuenta autorizada.</div>
+  {% endif %}
+  {% if form.non_field_errors %}
+  <div class="login-warning" role="alert">{{ form.non_field_errors }}</div>
+  {% endif %}
+  <form method="post" class="abm-form login-form">
+    {% csrf_token %}
+    {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+    {% for field in form %}
+    <div class="form-group">
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {{ field }}
+      {% for error in field.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+    </div>
+    {% endfor %}
+    <button type="submit">Ingresar</button>
+  </form>
+  <p class="muted">Los visitantes pueden seguir viendo las estadísticas sin iniciar sesión.</p>
+  <a class="action-link" href="{% url 'stats:index' %}">← Volver al sitio</a>
+</section>
+{% endblock %}

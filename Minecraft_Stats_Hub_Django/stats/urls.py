@@ -1,9 +1,19 @@
+from django.contrib.auth.views import LoginView, LogoutView
 from django.urls import path
+
+from .auth_forms import StaffLoginForm
 from . import views
 
 app_name = "stats"
 
 urlpatterns = [
+    path("gestion/ingresar/", LoginView.as_view(
+        template_name="gestion/login.html",
+        authentication_form=StaffLoginForm,
+        next_page="stats:jugadores_gestion",
+        redirect_authenticated_user=False,
+    ), name="gestion_login"),
+    path("gestion/salir/", LogoutView.as_view(next_page="stats:index"), name="gestion_logout"),
     path("", views.index, name="index"),
 
     # ABM de jugadores
@@ -23,6 +33,12 @@ urlpatterns = [
     path("gestion/mods/nuevo/", views.mod_crear, name="mod_crear"),
     path("gestion/mods/<int:pk>/editar/", views.mod_editar, name="mod_editar"),
     path("gestion/mods/<int:pk>/eliminar/", views.mod_eliminar, name="mod_eliminar"),
+
+    # ABM de speedruns
+    path("gestion/speedruns/", views.speedruns_gestion, name="speedruns_gestion"),
+    path("gestion/speedruns/nuevo/", views.speedrun_crear, name="speedrun_crear"),
+    path("gestion/speedruns/<int:pk>/editar/", views.speedrun_editar, name="speedrun_editar"),
+    path("gestion/speedruns/<int:pk>/eliminar/", views.speedrun_eliminar, name="speedrun_eliminar"),
 
     # API JSON usada por la página pública
     path("api/jugadores/buscar/", views.api_buscar_jugador, name="api_buscar_jugador"),

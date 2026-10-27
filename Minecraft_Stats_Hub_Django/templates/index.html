@@ -21,9 +21,14 @@
       <a href="#pvp">PvP</a>
       <a href="#mods">Mods</a>
       <a href="#servidores">Servidores</a>
+      {% if user.is_staff %}
       <a href="{% url 'stats:jugadores_gestion' %}">ABM Jugadores</a>
       <a href="{% url 'stats:servidores_gestion' %}">ABM Servidores</a>
       <a href="{% url 'stats:mods_gestion' %}">ABM Mods</a>
+      <a href="{% url 'stats:speedruns_gestion' %}">ABM Speedruns</a>
+      {% else %}
+      <a href="{% url 'stats:gestion_login' %}">Administración</a>
+      {% endif %}
     </nav>
   </header>
 
@@ -49,7 +54,9 @@
         <button id="search-button" type="button">Buscar</button>
       </div>
       <div id="resultado" class="result" aria-live="polite"></div>
+{% if user.is_staff %}
       <p class="data-note"><a class="inline-link" href="{% url 'stats:jugadores_gestion' %}">Administrar jugadores (ABM) →</a></p>
+      {% endif %}
     </section>
 
     <section id="speedrun" class="panel">
@@ -74,6 +81,9 @@
         </table>
       </div>
       <div class="chart-wrap"><canvas id="chart"></canvas></div>
+{% if user.is_staff %}
+      <p class="data-note"><a class="inline-link" href="{% url 'stats:speedruns_gestion' %}">Administrar speedruns (ABM) →</a></p>
+      {% endif %}
       {{ chart_labels|json_script:"chart-labels" }}
       {{ chart_values|json_script:"chart-values" }}
     </section>
@@ -96,7 +106,9 @@
         <li>Todavía no hay mods cargados.</li>
         {% endfor %}
       </ul>
+{% if user.is_staff %}
       <p class="data-note"><a class="inline-link" href="{% url 'stats:mods_gestion' %}">Administrar mods (ABM) →</a></p>
+      {% endif %}
     </section>
 
     <section id="servidores" class="panel">

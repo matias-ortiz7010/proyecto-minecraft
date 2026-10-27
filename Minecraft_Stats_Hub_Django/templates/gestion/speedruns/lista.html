@@ -1,0 +1,48 @@
+{% extends 'gestion/base_gestion.html' %}
+{% block title %}ABM de speedruns{% endblock %}
+{% block content %}
+<section class="panel management-panel">
+  <div class="management-heading">
+    <div>
+      <p class="eyebrow">Sistema ABM</p>
+      <h1>Gestión de speedruns</h1>
+      <p class="muted">Alta, baja, modificación y consulta de los tiempos guardados en Django.</p>
+    </div>
+    <a class="button-link" href="{% url 'stats:speedrun_crear' %}">+ Agregar speedrun</a>
+  </div>
+
+  <form method="get" class="management-search">
+    <input type="search" name="q" value="{{ query }}" placeholder="Buscar por jugador, categoría o versión..." aria-label="Buscar speedruns">
+    <button type="submit">Buscar</button>
+    {% if query %}<a class="button-link button-secondary" href="{% url 'stats:speedruns_gestion' %}">Limpiar</a>{% endif %}
+  </form>
+
+  <div class="table-scroll">
+    <table class="management-table">
+      <thead><tr><th>ID</th><th>Jugador</th><th>Categoría</th><th>Tiempo</th><th>Fecha</th><th>Versión</th><th>Marcado</th><th>Fuente</th><th>Acciones</th></tr></thead>
+      <tbody>
+      {% for run in speedruns %}
+        <tr>
+          <td>{{ run.pk }}</td>
+          <td><strong>{{ run.jugador.nombre }}</strong></td>
+          <td>{{ run.categoria }}</td>
+          <td class="mono">{{ run.tiempo_formateado }}</td>
+          <td>{{ run.fecha|date:"d/m/Y"|default:"—" }}</td>
+          <td>{{ run.version|default:"—" }}</td>
+          <td>{% if run.verificado %}Verificado (manual){% else %}Pendiente{% endif %}</td>
+          <td>{% if run.fuente_url %}<a class="action-link" href="{{ run.fuente_url }}" target="_blank" rel="noopener noreferrer">Ver evidencia</a>{% else %}—{% endif %}</td>
+          <td><div class="row-actions">
+            <a class="action-link" href="{% url 'stats:speedrun_editar' run.pk %}">Editar</a>
+            <a class="action-link danger-text" href="{% url 'stats:speedrun_eliminar' run.pk %}">Eliminar</a>
+          </div></td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="9">No hay speedruns que coincidan con la búsqueda.</td></tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p class="data-note">Total mostrado: {{ speedruns|length }} registro{{ speedruns|length|pluralize:"s" }}.</p>
+  <p class="data-note">Los registros y la casilla de verificación son manuales, no certificaciones oficiales. Compará tiempos únicamente dentro de la misma categoría y reglas.</p>
+</section>
+{% endblock %}

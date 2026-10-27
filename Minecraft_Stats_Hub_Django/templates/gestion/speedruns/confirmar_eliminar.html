@@ -1,0 +1,17 @@
+{% extends 'gestion/base_gestion.html' %}
+{% block title %}Eliminar speedrun{% endblock %}
+{% block content %}
+<section class="panel management-panel form-panel">
+  <p class="eyebrow danger-text">Baja</p>
+  <h1>Eliminar speedrun</h1>
+  <div class="delete-warning">
+    <p>Vas a eliminar la speedrun de <strong>{{ record.jugador.nombre }}</strong>, categoría <strong>{{ record.categoria }}</strong>, tiempo <strong>{{ record.tiempo_formateado }}</strong>.</p>
+    <p class="muted">Esta acción elimina el registro, pero NO elimina al jugador.</p>
+  </div>
+  <form method="post" class="form-actions">
+    {% csrf_token %}
+    <button class="danger-button" type="submit">Sí, eliminar</button>
+    <a class="button-link button-secondary" href="{% url 'stats:speedruns_gestion' %}">Cancelar</a>
+  </form>
+</section>
+{% endblock %}

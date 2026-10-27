@@ -1,0 +1,11 @@
+/* Login y salida del ABM: mantiene la paleta del sitio */
+.login-panel { max-width: 610px; margin: 40px auto; padding: 28px; }
+.login-panel h1 { margin: 4px 0 12px; }
+.login-form { max-width: 480px; margin: 22px 0; }
+.login-form input { width: 100%; }
+.login-warning { color: #ffdddd; background: #401c1c; border: 1px solid #ba5656;
+  padding: 12px 14px; margin-top: 20px; border-radius: 8px; }
+.nav-logout { display: inline-flex; margin: 0; align-items: center; }
+.nav-logout-button { border: 1px solid #71b900; border-radius: 6px; background: transparent;
+  color: #d9ead7; padding: 5px 9px; cursor: pointer; font: inherit; }
+.nav-logout-button:hover, .nav-logout-button:focus-visible { color: #b4ff39; border-color: #b4ff39; }

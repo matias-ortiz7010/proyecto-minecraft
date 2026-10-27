@@ -1,0 +1,66 @@
+{% extends 'gestion/base_gestion.html' %}
+{% load static %}
+{% block title %}{{ titulo }}{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/speedrun_calendar.css' %}">
+<section class="panel management-panel form-panel">
+  <div class="management-heading">
+    <div>
+      <p class="eyebrow">{% if record %}Modificación{% else %}Alta{% endif %}</p>
+      <h1>{{ titulo }}</h1>
+      <p class="muted">Elegí un jugador registrado, ingresá el tiempo (ej. 06:50.123) y seleccioná la fecha en el mini calendario.</p>
+    </div>
+    <a class="button-link button-secondary" href="{% url 'stats:speedruns_gestion' %}">← Volver</a>
+  </div>
+  <form method="post" class="abm-form" novalidate>
+    {% csrf_token %}
+    {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors }}</div>{% endif %}
+    {% for field in form %}
+    <div class="form-group">
+      <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+      {% if field.name == "fecha" %}
+        <div class="sr-date" data-sr-datepicker>
+          <div class="sr-date-input-row">
+            {{ field }}
+            <button type="button" class="sr-date-toggle" data-sr-toggle
+                    aria-haspopup="dialog" aria-expanded="false" aria-controls="speedrun-calendar">
+              <span aria-hidden="true">▦</span> Calendario
+            </button>
+          </div>
+          <div id="speedrun-calendar" class="sr-calendar" data-sr-calendar role="dialog"
+               aria-label="Elegir fecha del speedrun" hidden>
+            <div class="sr-calendar-head">
+              <button type="button" class="sr-calendar-arrow" data-sr-prev aria-label="Mes anterior">‹</button>
+              <select data-sr-month aria-label="Mes"></select>
+              <select data-sr-year aria-label="Año"></select>
+              <button type="button" class="sr-calendar-arrow" data-sr-next aria-label="Mes siguiente">›</button>
+            </div>
+            <div class="sr-calendar-weekdays" aria-hidden="true">
+              <span>Lu</span><span>Ma</span><span>Mi</span><span>Ju</span><span>Vi</span><span>Sá</span><span>Do</span>
+            </div>
+            <div class="sr-calendar-days" data-sr-days aria-label="Días del mes"></div>
+            <div class="sr-calendar-footer">
+              <button type="button" data-sr-today>Hoy</button>
+              <button type="button" data-sr-clear>Limpiar</button>
+              <button type="button" data-sr-close>Cerrar</button>
+            </div>
+          </div>
+        </div>
+      {% else %}
+        {{ field }}
+      {% endif %}
+      {% if field.name == "jugador" %}
+        <small>¿No aparece el jugador? <a class="action-link" href="{% url 'stats:jugador_crear' %}" target="_blank" rel="noopener noreferrer">+ Registrar jugador nuevo</a> en otra pestaña. Después volvé y actualizá este formulario para elegirlo.</small>
+      {% endif %}
+      {% if field.help_text %}<small>{{ field.help_text }}</small>{% endif %}
+      {% for error in field.errors %}<p class="field-error">{{ error }}</p>{% endfor %}
+    </div>
+    {% endfor %}
+    <div class="form-actions">
+      <button type="submit">{{ accion }}</button>
+      <a class="button-link button-secondary" href="{% url 'stats:speedruns_gestion' %}">Cancelar</a>
+    </div>
+  </form>
+</section>
+<script src="{% static 'js/speedrun_calendar.js' %}" defer></script>
+{% endblock %}

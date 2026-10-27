@@ -1,0 +1,38 @@
+/* Mini calendario exclusivo del ABM de speedruns. No cambia otros módulos. */
+.sr-date { position: relative; width: 100%; }
+.sr-date-input-row { display: flex; align-items: stretch; gap: 9px; }
+.sr-date-input-row input { flex: 1 1 auto; min-width: 0; }
+.sr-date-toggle { flex: 0 0 auto; border: 1px solid #96d70b; background: #8cda00; color: #061000; }
+.sr-calendar[hidden] { display: none !important; }
+.sr-calendar {
+  position: absolute; top: calc(100% + 7px); left: 0;
+  width: min(100%, 342px); box-sizing: border-box;
+  z-index: 30; padding: 14px; background: #111915;
+  border: 1px solid #628f22; border-radius: 13px;
+  box-shadow: 0 14px 38px rgba(0, 0, 0, .65); color: #fff;
+}
+.sr-calendar.sr-calendar-up { top: auto; bottom: calc(100% + 7px); }
+.sr-calendar-head { display: grid; grid-template-columns: 35px 1fr 82px 35px; gap: 6px; margin-bottom: 12px; }
+.sr-calendar-head select {
+  min-width: 0; padding: 7px 4px; color: #fff; background: #080e0a;
+  border: 1px solid #365130; border-radius: 7px; font: inherit;
+}
+.sr-calendar button { padding: 7px 2px; border-radius: 7px; }
+.sr-calendar-arrow { background: #1d2a20; border: 1px solid #42633a; color: #b4ed68; font-size: 1.35rem; line-height: 1; }
+.sr-calendar-weekdays, .sr-calendar-days { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; text-align: center; }
+.sr-calendar-weekdays { color: #b0bdaf; margin-bottom: 5px; font-size: .78rem; }
+.sr-calendar-weekdays span { padding: 5px 0; }
+.sr-calendar-days .sr-calendar-day { background: transparent; color: #f5f8f3; font-weight: 600; min-height: 36px; }
+.sr-calendar-days .sr-calendar-day:hover, .sr-calendar-days .sr-calendar-day:focus-visible { background: #365522; color: white; }
+.sr-calendar-days .sr-calendar-day.selected { background: #8cda00; color: #071000; }
+.sr-calendar-days .sr-calendar-day.today:not(.selected) { outline: 1px solid #8cda00; outline-offset: -2px; }
+.sr-calendar-footer { display: flex; gap: 6px; justify-content: space-between; margin-top: 12px; border-top: 1px solid #374638; padding-top: 10px; }
+.sr-calendar-footer button { flex: 1; border: 1px solid #365130; background: #202d23; color: #e5f4df; font-size: .83rem; }
+.sr-calendar-footer button:first-child { background: #86d400; color: #071000; }
+.sr-calendar :is(button,select):focus-visible, .sr-date-toggle:focus-visible { outline: 2px solid #bfff6a; outline-offset: 2px; }
+@media (max-width: 440px) {
+  .sr-date-input-row { flex-wrap: wrap; }
+  .sr-date-toggle { width: 100%; }
+  .sr-calendar { width: 100%; }
+  .sr-calendar-head { grid-template-columns: 30px 1fr 72px 30px; }
+}
